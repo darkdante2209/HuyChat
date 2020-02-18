@@ -1,0 +1,28 @@
+{
+  "name": "huychat",
+  "version": "1.0.0",
+  "description": "HuyChat From MTA",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "babel-node src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/darkdante2209/HuyChat.git"
+  },
+  "author": "Pham Minh Huy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/darkdante2209/HuyChat/issues"
+  },
+  "homepage": "https://github.com/darkdante2209/HuyChat#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^4.13.9"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.7.0"
+  }
+}
