@@ -18,6 +18,7 @@
   },
   "homepage": "https://github.com/darkdante2209/HuyChat#readme",
   "dependencies": {
+    "bluebird": "^3.5.3",
     "express": "^4.17.1",
     "mongoose": "^4.13.9"
   },
