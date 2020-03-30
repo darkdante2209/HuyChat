@@ -1,0 +1,21 @@
+{
+  "name": "HuyChat",
+  "homepage": "https://mta.edu.vn",
+  "authors": [
+    "Phạm Minh Huy <pmhuy2209@gmail.com>"
+  ],
+  "description": "Manage frontend libraries.",
+  "main": "src/server.js",
+  "license": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bower_components": "https://github.com/darkdante2209/HuyChat-third-party-libraries.git"
+  }
+}
