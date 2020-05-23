@@ -44,10 +44,10 @@ let initPassportLocal = () => {
     //Lưu toàn bộ thông tin vào biến req.user
     UserModel.findUserById(id)
       .then(user => {
-
+        return done(null, user);
       })
       .catch(error => {
-
+        return done(error, null);
       });
   });
 };
