@@ -21,6 +21,7 @@
     "bcrypt": "^4.0.1",
     "bluebird": "^3.5.3",
     "body-parser": "^1.18.2",
+    "bower": "^1.8.8",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^2.0.1",
     "ejs": "^2.5.7",
