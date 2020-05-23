@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import bcrypt from "bcrypt";
 
 let Schema = mongoose.Schema;
 let UserSchema = new Schema({
@@ -29,6 +30,7 @@ let UserSchema = new Schema({
   deletedAt: {type: Number, default: null},
 });
 
+//Statics: Chỉ nằm trong phạm vị schema, chỉ giúp tìm ra bản ghi
 UserSchema.statics = {
   createNew(item) {
     return this.create(item);
@@ -46,11 +48,21 @@ UserSchema.statics = {
     return this.findOne({"local.verifyToken": token}).exec();
   },
 
+  findUserById(id) {
+    return this.findById(id).exec();
+  },
+
   verify(token) {
     return this.findOneAndUpdate(
       {"local.verifyToken": token},
       {"local.isActive": true, "local.verifyToken": null}
     ).exec();
+  }
+};
+//Methods: Khi đã có bản ghi, gọi đến phương thức trong methods để thực hiện công việc
+UserSchema.methods = {
+  comparePassword(password) {
+    return bcrypt.compare(password, this.local.password); //Return a promise has result is true or false
   }
 };
 
