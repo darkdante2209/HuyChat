@@ -10,13 +10,18 @@ export const transErrors = {
   account_removed: "Tài khoản này đã bị gỡ khỏi hệ thống, nếu tin răng điều này là hiểu nhầm, vui lòng liên hệ lại với bộ phận hỗ trợ của chúng tôi.",
   account_not_active: "Email này đã được đăng ký nhưng chưa được kích hoạt, vui lòng kiểm tra email của bạn",
   token_undefined: "Tài khoản này của bạn đã được kích hoạt, bạn đã có thể đăng nhập vào ứng dụng.",
+  login_failed: "Tài khoản hoặc mật khẩu bạn vừa nhập không chính xác, vui lòng thử lại.",
+  server_error: "Có lỗi từ phía hệ thống, vui lòng liên hệ với bộ phận hỗ trợ của chúng tôi để phản hồi lại lỗi này, xin cảm ơn.",
 };
 
 export const transSuccess = {
   userCreated: (userEmail) => {
     return `Tài khoản <strong>${userEmail}</strong> đã được tạo, vui lòng kiểm tra email của bạn để kích hoạt tài khoản trước khi đăng nhập. Xin cảm ơn!`;
   },
-  account_activated: "Kích hoạt tài khoản thành công, bạn đã có thể đăng nhập vào ứng dụng này."
+  account_activated: "Kích hoạt tài khoản thành công, bạn đã có thể đăng nhập vào ứng dụng này.",
+  loginSuccess: (username) => {
+    return `Xin chào ${username}, chúc bạn một ngày tốt lành.`;
+  }
 };
 
 export const transMail = {
