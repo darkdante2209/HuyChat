@@ -3,10 +3,12 @@ import {home, auth} from "./../controllers/index";
 import {authValid} from "./../validation/index";
 import passport from "passport";
 import initPassportLocal from "./../controllers/passportController/local";
+import initPassportFacebook from "./../controllers/passportController/facebook";
 
 
 // Init all passport
 initPassportLocal();
+initPassportFacebook();
 
 let router = express.Router(); //Function trong express
 
@@ -30,6 +32,13 @@ let initRoutes = (app) => {
     failureFlash: true
   }));
 
+  //Đường dẫn /auth/facebook ở trong views/auth/login/login.ejs tại form login facebook có href="/auth/facebook"
+  router.get("/auth/facebook", passport.authenticate("facebook", {scope: ["email"]}));
+  //Callback url từ FB_CALLBACK_URL trong env.sh
+  router.get("/auth/facebook/callback", passport.authenticate("facebook", {
+    successRedirect: "/",
+    failureRedirect: "/login-register",
+  }));
   router.get("/", auth.checkLoggedIn, home.getHome);
   //Đường dẫn "/logout" trùng với href ở trong views/main/navbar/navbar.ejs
   router.get("/logout", auth.checkLoggedIn, auth.getLogout);

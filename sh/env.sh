@@ -15,3 +15,9 @@ export MAIL_USER=huychat.mta@gmail.com
 export MAIL_PASSWORD=huychat123
 export MAIL_HOST=smtp.gmail.com
 export MAIL_PORT=587
+
+#Config facebook login app
+export FB_APP_ID=917958478669600
+export FB_APP_SECRET=d7af2d04d3778ade0e308fa56b70ef02
+export FB_CALLBACK_URL=https://localhost:2209/auth/facebook/callback
+#Để khi facebook xác thực xong sẽ gọi lại URL này để trở về app
