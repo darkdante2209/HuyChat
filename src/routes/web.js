@@ -16,20 +16,23 @@ let router = express.Router(); //Function trong express
  */
 
 let initRoutes = (app) => {
-  router.get("/", home.getHome);
-  
-  router.get("/login-register", auth.getLoginRegister);
+  router.get("/login-register", auth.checkLoggedOut, auth.getLoginRegister);
 
-  router.post("/register", authValid.register, auth.postRegister);
+  router.post("/register", auth.checkLoggedOut, authValid.register, auth.postRegister);
 
-  router.get("/verify/:token", auth.verifyAccount);
+  router.get("/verify/:token", auth.checkLoggedOut, auth.verifyAccount);
 
+   //Đường dẫn "/login/" phải trùng với action trong views/auth/login/login.ejs form login
   router.post("/login", passport.authenticate("local", {
     successRedirect: "/",
     failureRedirect: "/login-register",
     successFlash: true, //Truyền flash request về
     failureFlash: true
-  })); //Đường dẫn "/login/" phải trùng với action trong views/auth/login/login.ejs form login
+  }));
+
+  router.get("/", auth.checkLoggedIn, home.getHome);
+  //Đường dẫn "/logout" trùng với href ở trong views/main/navbar/navbar.ejs
+  router.get("/logout", auth.checkLoggedIn, auth.getLogout);
 
   return app.use("/", router); 
 };
