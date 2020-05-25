@@ -21,3 +21,9 @@ export FB_APP_ID=***
 export FB_APP_SECRET=***
 export FB_CALLBACK_URL=***
 #Để khi facebook xác thực xong sẽ gọi lại URL này để trở về app
+
+#Config google login app
+export GG_APP_ID=***
+export GG_APP_SECRET=***
+export GG_CALLBACK_URL=***
+#Để khi google xác thực xong sẽ gọi lại URL này để trở về app
