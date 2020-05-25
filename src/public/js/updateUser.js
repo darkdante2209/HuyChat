@@ -6,7 +6,7 @@ function updateUserInfo() {
     $("#input-change-avatar").bind("change", function() {
         let fileData = $(this).prop("files")[0];
         let math = ["image/png", "image/jpg", "image/jpeg"];
-        let limit = 2097152;//byte = 2MB
+        let limit = 1048576;//byte = 1MB
 
         if ($.inArray(fileData.type, math) === -1) {
             alertify.notify("Kiểu file không hợp lệ, chỉ chấp nhận jpg, jpeg hoặc png.", "error", 7); //7 là thời gian hiển thị báo lỗi
@@ -79,19 +79,35 @@ $(document).ready(function() {
             contentType: false,
             processData: false,//Khi gửi req dữ liệu là form data thì cần khai báo ba biến.
             data: userAvatar,
-            success: function() {
-                //
+            success: function(result) {
+                console.log(result);
+                //Display success
+                $(".user-modal-alert-success").find("span").text(result.message);
+                $(".user-modal-alert-success").css("display", "block");
+
+                //Update avatar at navbar
+                $("#navbar-avatar").attr("src", result.imageSrc);
+                
+                //Update origin avatar src
+                originAvatarSrc = result.imageSrc;
+
+                //Reset all
+                $("#input-btn-cancel-update-user").click();
             },
-            error: function() {
-                //
+            error: function(error) {
+                //Display errors
+                $(".user-modal-alert-error").find("span").text(error.responseText);
+                $(".user-modal-alert-error").css("display", "block");
+
+                //Reset all
+                $("#input-btn-cancel-update-user").click();
             },
         });
-        // console.log(userAvatar);
-        // console.log(userInfo);
     });
     $("#input-btn-cancel-update-user").bind("click", function() {
         userAvatar = null;
         userInfo = {};
+        $("#input-change-avatar").val(null);
         $("#user-modal-avatar").attr("src", originAvatarSrc);
     });
 

@@ -12,6 +12,8 @@ export const transErrors = {
   token_undefined: "Tài khoản này của bạn đã được kích hoạt, bạn đã có thể đăng nhập vào ứng dụng.",
   login_failed: "Tài khoản hoặc mật khẩu bạn vừa nhập không chính xác, vui lòng thử lại.",
   server_error: "Có lỗi từ phía hệ thống, vui lòng liên hệ với bộ phận hỗ trợ của chúng tôi để phản hồi lại lỗi này, xin cảm ơn.",
+  avatar_type: "Kiểu file không hợp lệ, chỉ chấp nhận jpg, jpeg hoặc png.",
+  avatar_size: "Ảnh upload tối đa cho phép là 1MB"
 };
 
 export const transSuccess = {
@@ -23,6 +25,7 @@ export const transSuccess = {
     return `Xin chào ${username}, chúc bạn một ngày tốt lành.`;
   },
   logout_success: "Đăng xuất tài khoản thành công, hẹn gặp lại!",
+  avatar_updated: "Cập nhật ảnh đại diện thành công."
 };
 
 export const transMail = {

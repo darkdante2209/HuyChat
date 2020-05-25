@@ -1,5 +1,5 @@
 import express from "express";
-import {home, auth} from "./../controllers/index";
+import {home, auth, user} from "./../controllers/index";
 import {authValid} from "./../validation/index";
 import passport from "passport";
 import initPassportLocal from "./../controllers/passportController/local";
@@ -56,6 +56,7 @@ let initRoutes = (app) => {
   //Đường dẫn "/logout" trùng với href ở trong views/main/navbar/navbar.ejs
   router.get("/logout", auth.checkLoggedIn, auth.getLogout);
 
+  router.put("/user/update-avatar", auth.checkLoggedIn, user.updateAvatar);
   return app.use("/", router); 
 };
 
