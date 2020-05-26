@@ -60,6 +60,8 @@ let initRoutes = (app) => {
 
   router.put("/user/update-info", auth.checkLoggedIn, userValid.updateInfo, user.updateInfo);
 
+  router.put("/user/update-password", auth.checkLoggedIn, userValid.updatePassword, user.updatePassword);
+
   return app.use("/", router); 
 };
 
