@@ -71,8 +71,8 @@ function updateUserInfo() {
         let username = $(this).val();
         let regexUsername = new RegExp(/^[\s0-9a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/);
         
-        if (!regexUsername.test(username) || username.length < 3 || username.length > 17) {
-            alertify.notify("Tên người dùng giới hạn trong khoảng 3-17 ký tự và không được phép chứa ký tự đặc biệt.", "error", 7);
+        if (!regexUsername.test(username) || username.length < 3 || username.length > 30) {
+            alertify.notify("Tên người dùng giới hạn trong khoảng 3-30 ký tự và không được phép chứa ký tự đặc biệt.", "error", 7);
             $(this).val(originUserInfo.username);
             delete userInfo.username;//Xóa trường hợp trước đó nếu người dùng update nhiều lần và lần sau sai, tránh bug
             return false;

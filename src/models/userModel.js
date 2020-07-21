@@ -73,6 +73,26 @@ UserSchema.statics = {
       {"local.verifyToken": token},
       {"local.isActive": true, "local.verifyToken": null}
     ).exec();
+  },
+
+  /**
+   * Tìm user để thêm vào contact
+   * @param {array: id các tài khoản đã thêm vào} deprecatedUserIds 
+   * @param {string: keyword search} keyword 
+   */
+  findAllForAddContact(deprecatedUserIds, keyword) {
+    return this.find({
+      $and: [
+        {"_id": {$nin: deprecatedUserIds}},//nin=not in
+        {"local.isActive": true},
+        {$or: [
+          {"username": {"$regex": keyword}},//$regex là cú pháp của mongoose để tìm username gần giống keyword nhất.
+          {"local.email": {"$regex": keyword}},
+          {"facebook.email": {"$regex": keyword}},
+          {"google.email": {"$regex": keyword}},
+        ]}
+      ]
+    }, {_id: 1, username: 1, address: 1, avatar: 1}).exec();//1 có nghĩa là được lấy ra
   }
 };
 //Methods: Khi đã có bản ghi, gọi đến phương thức trong methods để thực hiện công việc
