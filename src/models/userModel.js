@@ -86,10 +86,11 @@ UserSchema.statics = {
         {"_id": {$nin: deprecatedUserIds}},//nin=not in
         {"local.isActive": true},
         {$or: [
-          {"username": {"$regex": keyword}},//$regex là cú pháp của mongoose để tìm username gần giống keyword nhất.
-          {"local.email": {"$regex": keyword}},
-          {"facebook.email": {"$regex": keyword}},
-          {"google.email": {"$regex": keyword}},
+          {"username": {"$regex": new RegExp(keyword, "i") }},//$regex là cú pháp của mongoose để tìm username gần giống keyword nhất.
+          {"local.email": {"$regex": new RegExp(keyword, "i") }},//i trong RegExp để không phân biệt chữ hoa chữ thường
+          {"facebook.email": {"$regex": new RegExp(keyword, "i") }},
+          {"google.email": {"$regex": new RegExp(keyword, "i") }}
+          
         ]}
       ]
     }, {_id: 1, username: 1, address: 1, avatar: 1}).exec();//1 có nghĩa là được lấy ra
