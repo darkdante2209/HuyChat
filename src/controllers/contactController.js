@@ -10,7 +10,6 @@ let findUsersContact = async (req, res) => {
       errors.forEach(item => {
         errorArr.push(item.msg);
       });
-
       //Logging
       // console.log(errorArr);
       return res.status(500).send(errorArr);
@@ -27,6 +26,32 @@ let findUsersContact = async (req, res) => {
     }
 }
 
+let addNew = async (req, res) => {
+  try {
+      let currentUserId = req.user._id;
+      let contactId = req.body.uid;//Lấy uid từ phương thức post phải dùng body
+
+      let newContact = await contact.addNew(currentUserId, contactId);
+      return res.status(200).send({success: !!newContact});//!! để nếu newContact tồn tại sẽ trả về true, ngược lại false
+  } catch (error) {
+      return res.status(500).send(error);
+  }
+}
+
+let removeRequestContact = async (req, res) => {
+  try {
+      let currentUserId = req.user._id;
+      let contactId = req.body.uid;//Lấy uid từ phương thức post phải dùng body
+
+      let removeReq = await contact.removeRequestContact(currentUserId, contactId);
+      return res.status(200).send({success: !!removeReq});//!! để nếu newContact tồn tại sẽ trả về true, ngược lại false
+  } catch (error) {
+      return res.status(500).send(error);
+  }
+}
+
 module.exports = {
-    findUsersContact: findUsersContact
+    findUsersContact: findUsersContact,
+    addNew: addNew,
+    removeRequestContact: removeRequestContact
 }
