@@ -10,6 +10,10 @@ export DB_PASSWORD=""
 export APP_HOST=localhost
 export APP_PORT=2209
 
+# Config session key & secret
+export SESSION_KEY="phamminhhuy"
+export SESSION_SECRET="darkdante"
+
 #Config admin email account
 export MAIL_USER=huychat.mta@gmail.com
 export MAIL_PASSWORD=huychat123

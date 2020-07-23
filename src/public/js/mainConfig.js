@@ -1,6 +1,9 @@
 /**
  * Created by https://trungquandev.com's author on 25/02/2018.
  */
+
+const socket = io();//Đây là biến toàn cục vì main config được gọi ngay đầu các file js nên sẽ được khởi tạo đầu tiên.
+
 function nineScrollLeft() {
   $('.left').niceScroll({
     smoothscroll: true,
