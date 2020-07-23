@@ -6,8 +6,8 @@ function addContact() {
                 $("#find-user").find(`div.user-add-new-contact[data-uid = ${targetId}]`).hide();//Tìm đến đúng thẻ ul li có uid trùng với uid mình cần
                 $("#find-user").find(`div.user-remove-request-contact[data-uid = ${targetId}]`).css("display", "inline-block");
                 increaseNumberNotifContact("count-request-contact-sent");
+                socket.emit("add-new-contact", {contactId: targetId});
             }
-            console.log(data);
         });
     });
 }
