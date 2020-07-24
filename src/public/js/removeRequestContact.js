@@ -10,8 +10,21 @@ function removeRequestContact() {
                     $("#find-user").find(`div.user-remove-request-contact[data-uid = ${targetId}]`).hide();//Tìm đến đúng thẻ ul li có uid trùng với uid mình cần
                     $("#find-user").find(`div.user-add-new-contact[data-uid = ${targetId}]`).css("display", "inline-block");
                     decreaseNumberNotifContact("count-request-contact-sent");
+                    socket.emit("remove-request-contact", {contactId: targetId});
                 }
             }
         });
     });
 }
+
+//socket lắng nghe sự kiện server gửi về
+socket.on("response-remove-request-contact", function(user) {
+    $(".noti_content").find(`span[data-uid = ${user.id}]`).remove();
+
+    // Xóa ở modal tab yêu cầu kết bạn
+
+    decreaseNumberNotifContact("count-request-contact-received");
+
+    decreaseNumberNotification("noti_contact_counter");
+    decreaseNumberNotification("noti_counter");
+});

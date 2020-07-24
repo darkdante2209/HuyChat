@@ -1,4 +1,5 @@
 import addNewContact from "./contact/addNewContact";
+import removeRequestContact from "./contact/removeRequestContact";
 
 /**
  * 
@@ -7,6 +8,7 @@ import addNewContact from "./contact/addNewContact";
 let initSockets = (io) => {
     addNewContact(io);//sử dụng io để tạo code trong hàm addNewContact
     //
+    removeRequestContact(io);
 };
 
 module.exports = initSockets;
