@@ -61,7 +61,7 @@ ContactSchema.statics = {
         {"contactId": contactId}
       ]
     }).exec();
-  }
+  },
 };
 
 module.exports = mongoose.model("contact", ContactSchema);

@@ -26,7 +26,7 @@ let removeRequestContact = (io) => {
             //Xóa các socket id cũ khi người dùng tải lại trang
             clients = removeSocketIdFromArray(clients, socket.request.user._id, socket);
         });
-        console.log(clients);
+        // console.log(clients);
     });
 };
 
