@@ -49,6 +49,16 @@ NotificationSchema.statics = {
         {"isRead": false}
       ]
     }).exec();
+  },
+
+  /**
+   * Lấy thêm thông báo để đọc, tối đa 10 item 1 lần
+   * @param {string} userId 
+   * @param {number} skip 
+   * @param {number} limit 
+   */
+  readMore(userId, skip, limit) {
+    return this.find({"receiverId": userId}).sort({"createdAt": -1}).skip(skip).limit(limit).exec();
   }
 }
 
