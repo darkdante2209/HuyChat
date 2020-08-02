@@ -70,6 +70,7 @@ let initRoutes = (app) => {
 
   router.get("/notification/read-more", auth.checkLoggedIn, notification.readMore);
 
+  router.put("/notification/mark-all-as-read", auth.checkLoggedIn, notification.markAllAsRead);
   return app.use("/", router); 
 };
 
