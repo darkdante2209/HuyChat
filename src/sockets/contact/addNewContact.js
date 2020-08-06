@@ -15,7 +15,8 @@ let addNewContact = (io) => {
             let currentUser = {
                 id: socket.request.user._id,
                 username: socket.request.user.username,
-                avatar: socket.request.user.avatar
+                avatar: socket.request.user.avatar,
+                address: (socket.request.user.address !== null) ? socket.request.user.address : ""
             };
             //Kiểm tra contact id từ data gửi vào socket trong addContact.js
             if (clients[data.contactId]) {

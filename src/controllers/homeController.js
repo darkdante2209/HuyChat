@@ -1,4 +1,4 @@
-import {notification} from "./../services/index";
+import {notification, contact} from "./../services/index";
 
 let getHome = async (req,res) => {
   //Lấy 10 item 1 lần
@@ -6,12 +6,30 @@ let getHome = async (req,res) => {
   //Lấy tổng số thông báo chưa đọc
   let countNotifUnread = await notification.countNotifUnread(req.user._id);
 
+  //Lấy danh sách contacts, 10 item 1 lần
+  let contacts = await contact.getContacts(req.user._id);
+  //Lấy danh sách gửi yêu cầu kết bạn, 10 tiem 1 lần
+  let contactsSent = await contact.getContactsSent(req.user._id);
+  //Lấy danh sách yêu cầu kết bạn nhận được, 10 item 1 lần
+  let contactsReceived = await contact.getContactsReceived(req.user._id);
+
+  //Đếm contacts
+  let countAllContacts = await contact.countAllContacts(req.user._id);
+  let countAllContactsSent = await contact.countAllContactsSent(req.user._id);
+  let countAllContactsReceived = await contact.countAllContactsReceived(req.user._id);
+
   return res.render("main/home/home", {
     errors:req.flash("errors"),
     success: req.flash("success"),
     user: req.user,//Như trong passport user thì ta đã lưu user vào trong req nên không cần phải querry về database nữa
     notifications: notifications,
-    countNotifUnread: countNotifUnread
+    countNotifUnread: countNotifUnread,
+    contacts: contacts,
+    contactsSent: contactsSent,
+    contactsReceived: contactsReceived,
+    countAllContacts: countAllContacts,
+    countAllContactsSent: countAllContactsSent,
+    countAllContactsReceived: countAllContactsReceived
   });
 };
 
