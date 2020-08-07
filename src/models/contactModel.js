@@ -50,7 +50,7 @@ ContactSchema.statics = {
   },
 
   /**
-   * Xóa contact yêu cầu
+   * Xóa lời mời kết bạn gửi đi
    * @param {string} userId 
    * @param {string} contactId 
    */
@@ -59,6 +59,20 @@ ContactSchema.statics = {
       $and: [
         {"userId": userId},
         {"contactId": contactId}
+      ]
+    }).exec();
+  },
+
+  /**
+   * Xóa lời mời kết bạn nhận được
+   * @param {string} userId 
+   * @param {string} contactId 
+   */
+  removeRequestContactReceived(userId, contactId) {
+    return this.remove({
+      $and: [
+        {"contactId": userId},
+        {"userId": contactId}
       ]
     }).exec();
   },
