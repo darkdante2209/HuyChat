@@ -18,7 +18,7 @@ let findUsersContact = (currentUserId, keyword) => {
         let users = await UserModel.findAllForAddContact(deprecatedUserIds, keyword);
         resolve(users);
     });
-}
+};
 
 let addNew = (currentUserId, contactId) => {
     return new Promise(async (resolve, reject) => {
@@ -42,7 +42,7 @@ let addNew = (currentUserId, contactId) => {
 
         resolve(newContact);
     });
-}
+};
 
 let removeRequestContactSent = (currentUserId, contactId) => {
     return new Promise(async (resolve, reject) => {
@@ -54,7 +54,19 @@ let removeRequestContactSent = (currentUserId, contactId) => {
         await NotificationModel.model.removeRequestContactSentNotification(currentUserId, contactId, NotificationModel.types.ADD_CONTACT);
         resolve(true);
     });
-}
+};
+
+let removeRequestContactReceived = (currentUserId, contactId) => {
+    return new Promise(async (resolve, reject) => {
+        let removeReq = await ContactModel.removeRequestContactReceived(currentUserId, contactId);
+        if (removeReq.result.n === 0) {
+            return reject(false);
+        }
+        // Xóa thông báo contact
+        // await NotificationModel.model.removeRequestContactReceivedNotification(currentUserId, contactId, NotificationModel.types.ADD_CONTACT);
+        resolve(true);
+    });
+};
 
 let getContacts = (currentUserId) => {
     return new Promise(async (resolve, reject) => {
@@ -209,6 +221,7 @@ module.exports = {
     findUsersContact: findUsersContact,
     addNew: addNew,
     removeRequestContactSent: removeRequestContactSent,
+    removeRequestContactReceived: removeRequestContactReceived,
     getContacts: getContacts,
     getContactsSent: getContactsSent,
     getContactsReceived: getContactsReceived,
