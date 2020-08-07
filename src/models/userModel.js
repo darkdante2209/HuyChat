@@ -94,6 +94,10 @@ UserSchema.statics = {
         ]}
       ]
     }, {_id: 1, username: 1, address: 1, avatar: 1}).exec();//1 có nghĩa là được lấy ra
+  },
+
+  getNormalUserDataById(id) {
+    return this.findById(id, {_id: 1, username: 1, address: 1, avatar: 1}).exec();
   }
 };
 //Methods: Khi đã có bản ghi, gọi đến phương thức trong methods để thực hiện công việc

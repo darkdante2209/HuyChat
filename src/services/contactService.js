@@ -62,11 +62,10 @@ let getContacts = (currentUserId) => {
             let contacts = await ContactModel.getContacts(currentUserId, LIMIT_NUMBER_TAKEN);
             let users = contacts.map(async (contact) => {
                 if (contact.contactId == currentUserId) {
-                    return await UserModel.findUserById(contact.userId);
+                    return await UserModel.getNormalUserDataById(contact.userId);
                 } else {
-                    return await UserModel.findUserById(contact.contactId);
+                    return await UserModel.getNormalUserDataById (contact.contactId);
                 }
-
             });
             resolve(await Promise.all(users));
         } catch (error) {
@@ -80,7 +79,7 @@ let getContactsSent = (currentUserId) => {
         try {
             let contacts = await ContactModel.getContactsSent(currentUserId, LIMIT_NUMBER_TAKEN);
             let users = contacts.map(async (contact) => {
-               return await UserModel.findUserById(contact.contactId);
+               return await UserModel.getNormalUserDataById(contact.contactId);
             });
             resolve(await Promise.all(users));
         } catch (error) {
@@ -94,7 +93,7 @@ let getContactsReceived = (currentUserId) => {
         try {
             let contacts = await ContactModel.getContactsReceived(currentUserId, LIMIT_NUMBER_TAKEN);
             let users = contacts.map(async (contact) => {
-               return await UserModel.findUserById(contact.userId);
+               return await UserModel.getNormalUserDataById(contact.userId);
             });
             resolve(await Promise.all(users));
         } catch (error) {
@@ -136,7 +135,75 @@ let countAllContactsReceived = (currentUserId) => {
     });
 };
 
+/**
+ * Xem thêm danh sách bạn bè,tối đa 10 item 1 lần
+ * @param {string} currentUserId 
+ * @param {number} skipNumberContact 
+ */
+let readMoreContacts = (currentUserId, skipNumberContact) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let newContacts = await ContactModel.readMoreContacts(currentUserId, skipNumberContact, LIMIT_NUMBER_TAKEN);
 
+            let users = newContacts.map(async (contact) => {
+                if (contact.contactId == currentUserId) {
+                    return await UserModel.getNormalUserDataById(contact.userId);
+                } else {
+                    return await UserModel.getNormalUserDataById(contact.contactId);
+                }
+            });
+            // Promise.all trả về một promise mới, promise mới này chỉ kết thúc khi tất cả promise tront users kết thúc hoặc có promise nào đó xử lý thất bại
+            // Kết quả của promise mới này là một mảng chứa kết quả cảu tất cả các promise theo đúng thứ tự hoặc kết quả lỗi của promise gây lỗi
+            resolve(await Promise.all(users));
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+/**
+ * Xem thêm yêu cầu kết bạn đã gửi,tối đa 10 item 1 lần
+ * @param {string} currentUserId 
+ * @param {number} skipNumberContact 
+ */
+let readMoreContactsSent = (currentUserId, skipNumberContact) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let newContacts = await ContactModel.readMoreContactsSent(currentUserId, skipNumberContact, LIMIT_NUMBER_TAKEN);
+
+            let users = newContacts.map(async (contact) => {
+                return await UserModel.getNormalUserDataById(contact.contactId);
+            });
+            // Promise.all trả về một promise mới, promise mới này chỉ kết thúc khi tất cả promise tront users kết thúc hoặc có promise nào đó xử lý thất bại
+            // Kết quả của promise mới này là một mảng chứa kết quả cảu tất cả các promise theo đúng thứ tự hoặc kết quả lỗi của promise gây lỗi
+            resolve(await Promise.all(users));
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
+/**
+ * Xem thêm yêu cầu kết bạn đã nhận,tối đa 10 item 1 lần
+ * @param {string} currentUserId 
+ * @param {number} skipNumberContact 
+ */
+let readMoreContactsReceived = (currentUserId, skipNumberContact) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            let newContacts = await ContactModel.readMoreContactsReceived(currentUserId, skipNumberContact, LIMIT_NUMBER_TAKEN);
+
+            let users = newContacts.map(async (contact) => {
+                return await UserModel.getNormalUserDataById(contact.userId);
+            });
+            // Promise.all trả về một promise mới, promise mới này chỉ kết thúc khi tất cả promise tront users kết thúc hoặc có promise nào đó xử lý thất bại
+            // Kết quả của promise mới này là một mảng chứa kết quả cảu tất cả các promise theo đúng thứ tự hoặc kết quả lỗi của promise gây lỗi
+            resolve(await Promise.all(users));
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
 
 module.exports = {
     findUsersContact: findUsersContact,
@@ -147,5 +214,8 @@ module.exports = {
     getContactsReceived: getContactsReceived,
     countAllContacts: countAllContacts,
     countAllContactsSent: countAllContactsSent,
-    countAllContactsReceived: countAllContactsReceived
+    countAllContactsReceived: countAllContactsReceived,
+    readMoreContacts: readMoreContacts,
+    readMoreContactsSent: readMoreContactsSent,
+    readMoreContactsReceived: readMoreContactsReceived
 }
