@@ -38,12 +38,12 @@ let addNew = async (req, res) => {
   }
 };
 
-let removeRequestContact = async (req, res) => {
+let removeRequestContactSent = async (req, res) => {
   try {
       let currentUserId = req.user._id;
       let contactId = req.body.uid;//Lấy uid từ phương thức post phải dùng body
 
-      let removeReq = await contact.removeRequestContact(currentUserId, contactId);
+      let removeReq = await contact.removeRequestContactSent(currentUserId, contactId);
       return res.status(200).send({success: !!removeReq});//!! để nếu newContact tồn tại sẽ trả về true, ngược lại false
   } catch (error) {
       return res.status(500).send(error);
@@ -92,7 +92,7 @@ let readMoreContactsReceived = async (req, res) => {
 module.exports = {
     findUsersContact: findUsersContact,
     addNew: addNew,
-    removeRequestContact: removeRequestContact,
+    removeRequestContactSent: removeRequestContactSent,
     readMoreContacts: readMoreContacts,
     readMoreContactsSent: readMoreContactsSent,
     readMoreContactsReceived: readMoreContactsReceived

@@ -44,14 +44,14 @@ let addNew = (currentUserId, contactId) => {
     });
 }
 
-let removeRequestContact = (currentUserId, contactId) => {
+let removeRequestContactSent = (currentUserId, contactId) => {
     return new Promise(async (resolve, reject) => {
-        let removeReq = await ContactModel.removeRequestContact(currentUserId, contactId);
+        let removeReq = await ContactModel.removeRequestContactSent(currentUserId, contactId);
         if (removeReq.result.n === 0) {
             return reject(false);
         }
         // Xóa thông báo contact
-        await NotificationModel.model.removeRequestContactNotification(currentUserId, contactId, NotificationModel.types.ADD_CONTACT);
+        await NotificationModel.model.removeRequestContactSentNotification(currentUserId, contactId, NotificationModel.types.ADD_CONTACT);
         resolve(true);
     });
 }
@@ -208,7 +208,7 @@ let readMoreContactsReceived = (currentUserId, skipNumberContact) => {
 module.exports = {
     findUsersContact: findUsersContact,
     addNew: addNew,
-    removeRequestContact: removeRequestContact,
+    removeRequestContactSent: removeRequestContactSent,
     getContacts: getContacts,
     getContactsSent: getContactsSent,
     getContactsReceived: getContactsReceived,
