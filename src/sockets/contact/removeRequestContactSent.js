@@ -1,10 +1,10 @@
-import {pushSocketIdToArray, emitNotifyToArray, removeSocketIdFromArray} from "./../../helpers/socketHelpers";
+import {pushSocketIdToArray, emitNotifyToArray, removeSocketIdFromArray} from "../../helpers/socketHelpers";
 
 /**
  * 
  * @param {*} io từ socket.io library
  */
-let removeRequestContact = (io) => {
+let removeRequestContactSent = (io) => {
     let clients = {};//Biến global
 
     io.on("connection", (socket) => {//Chạy khi truy cập trang web
@@ -12,13 +12,13 @@ let removeRequestContact = (io) => {
         //Đưa socket id vào mảng
         clients = pushSocketIdToArray(clients, socket.request.user._id, socket.id);
 
-        socket.on("remove-request-contact", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
+        socket.on("remove-request-contact-sent", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
             let currentUser = {
                 id: socket.request.user._id
             };
             //Kiểm tra contact id từ data gửi vào socket trong addContact.js
             if (clients[data.contactId]) {
-                emitNotifyToArray(clients, data.contactId, io, "response-remove-request-contact", currentUser);
+                emitNotifyToArray(clients, data.contactId, io, "response-remove-request-contact-sent", currentUser);
             }
         });
 
@@ -30,4 +30,4 @@ let removeRequestContact = (io) => {
     });
 };
 
-module.exports = removeRequestContact;
+module.exports = removeRequestContactSent;
