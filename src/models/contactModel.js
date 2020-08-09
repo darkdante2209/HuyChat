@@ -72,9 +72,25 @@ ContactSchema.statics = {
     return this.remove({
       $and: [
         {"contactId": userId},
-        {"userId": contactId}
+        {"userId": contactId},
+        {"status": false}
       ]
     }).exec();
+  },
+
+  /**
+   * Châp nhận lời mời kết bạn nhận được
+   * @param {string} userId of current user
+   * @param {string} contactId 
+   */
+  approveRequestContactReceived(userId, contactId) {
+    return this.update({
+      $and: [
+        {"contactId": userId},
+        {"userId": contactId},
+        {"status": false}
+      ]
+    }, {"status": true}).exec();
   },
 
   /**

@@ -29,6 +29,7 @@
     "express": "^4.17.1",
     "express-ejs-extend": "0.0.1",
     "express-session": "^1.15.6",
+    "express-subdomain": "^1.0.5",
     "express-validator": "^4.3.0",
     "fs-extra": "^7.0.1",
     "lodash": "^4.17.11",
