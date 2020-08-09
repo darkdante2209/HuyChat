@@ -62,6 +62,18 @@ let removeRequestContactReceived = async (req, res) => {
   }
 };
 
+let approveRequestContactReceived = async (req, res) => {
+  try {
+      let currentUserId = req.user._id;
+      let contactId = req.body.uid;//Lấy uid từ phương thức post phải dùng body
+
+      let approveReq = await contact.approveRequestContactReceived(currentUserId, contactId);
+      return res.status(200).send({success: !!approveReq});//!! để nếu newContact tồn tại sẽ trả về true, ngược lại false
+  } catch (error) {
+      return res.status(500).send(error);
+  }
+};
+
 let readMoreContacts = async (req, res) => {
   try {
     // Lấy số contact đã hiển thị từ query param để bỏ qua
@@ -106,6 +118,7 @@ module.exports = {
     addNew: addNew,
     removeRequestContactSent: removeRequestContactSent,
     removeRequestContactReceived: removeRequestContactReceived,
+    approveRequestContactReceived: approveRequestContactReceived,
     readMoreContacts: readMoreContacts,
     readMoreContactsSent: readMoreContactsSent,
     readMoreContactsReceived: readMoreContactsReceived
