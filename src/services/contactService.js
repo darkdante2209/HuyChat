@@ -194,7 +194,7 @@ let readMoreContacts = (currentUserId, skipNumberContact) => {
                 }
             });
             // Promise.all trả về một promise mới, promise mới này chỉ kết thúc khi tất cả promise tront users kết thúc hoặc có promise nào đó xử lý thất bại
-            // Kết quả của promise mới này là một mảng chứa kết quả cảu tất cả các promise theo đúng thứ tự hoặc kết quả lỗi của promise gây lỗi
+            // Kết quả của promise mới này là một mảng chứa kết quả của tất cả các promise theo đúng thứ tự hoặc kết quả lỗi của promise gây lỗi
             resolve(await Promise.all(users));
         } catch (error) {
             reject(error);
