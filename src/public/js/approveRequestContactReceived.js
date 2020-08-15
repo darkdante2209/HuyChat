@@ -30,7 +30,10 @@ function approveRequestContactReceived() {
                     increaseNumberNotifContact("count-contacts");//js/caculateNotifContact.js
             
                     decreaseNumberNotification("noti_contact_counter", 1);//js/caculateNotifContact.js
+                    removeContact();// js/removecontact.js
+                    //Xử lý user phần chat
                     
+
                     socket.emit("approve-request-contact-received", {contactId: targetId});
                 }
             }
@@ -81,6 +84,9 @@ socket.on("response-approve-request-contact-received", function(user) {
     </li>
     `;
     $("#contacts").find("ul").prepend(userInfoHtml);
+
+    removeContact();// js/removecontact.js
+    //Xử lý user phần chat
 });
 
 $(document).ready(function() {

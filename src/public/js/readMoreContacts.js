@@ -41,6 +41,8 @@ $(document).ready(function() {
                     </li>`);//append sẽ in thêm ở phía dưới, ko giống prepend là bên trên
             });
 
+            removeContact();// js/removecontact.js
+
             $("#link-read-more-contacts").css("display", "inline-block");
             $(".read-more-contacts-loader").css("display", "none");
         });//Query param URL
