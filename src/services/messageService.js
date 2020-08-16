@@ -1,9 +1,11 @@
 import ContactModel from "./../models/contactModel";
 import UserModel from "./../models/userModel";
 import ChatGroupModel from "./../models/chatGroupModel";
+import MessageModel from "./../models/messageModel";
 import _ from "lodash";
 
 const LIMIT_CONVERSATIONS_TAKEN = 10;
+const LIMIT_MESSAGES_TAKEN = 30;
 
 
 /**
@@ -36,10 +38,26 @@ let getAllConversationItems = (currentUserId) => {
                 return -item.updatedAt;// Để dấu - sẽ sắp xếp từ lớn đến nhỏ, ko thì sẽ từ nhỏ đến lớn
             });
 
+            // Lấy tin nhắn đổ ra màn hình chat
+            let allConversationWithMessagesPromise = allConversations.map(async (conversation) => {
+                let getMessages = await MessageModel.model.getMessages(currentUserId, conversation._id, LIMIT_MESSAGES_TAKEN);
+
+                conversation = conversation.toObject();
+                conversation.messages = getMessages;
+                return conversation
+            });
+
+            let allConversationWithMessages = await Promise.all(allConversationWithMessagesPromise);
+            //Sắp xếp theo updatedAt giảm dần
+            allConversationWithMessages = _.sortBy(allConversationWithMessages, (item) => {
+                return -item.updatedAt;
+            });
+
             resolve({
                 userConversations: userConversations,
                 groupConversations: groupConversations,
-                allConversations: allConversations
+                allConversations: allConversations,
+                allConversationWithMessages: allConversationWithMessages
             });
 
         } catch (error) {

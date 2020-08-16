@@ -41,8 +41,8 @@ let updateAvatar = (req, res) => {
             };
             //Update user avatar
             let userUpdate = await user.updateUser(req.user._id, updateUserItem);
-            //Remove old user avatar
-            await fsExtra.remove(`${app.avatar_directory}/${userUpdate.avatar}`);
+            // Không xóa avatar cũ của người dùng vì cần sử dụng trong bảng messages
+            // await fsExtra.remove(`${app.avatar_directory}/${userUpdate.avatar}`);
             let result = {
                 message: transSuccess.user_info_updated,
                 imageSrc: `/images/users/${req.file.filename}`//Vì đường dẫn đi từ UserModal của views chứ không phải backend
