@@ -1,6 +1,6 @@
 <div class="col-sm-3 sidenav no-padding">
   <div class="left">
-      <div class="top form-group">
+      <div class="top">
           <select class="form-control" id="select-type-chat">
               <option data-target="#all-chat" value="all-chat">Toàn bộ trò chuyện</option>
               <option data-target="#user-chat" value="user-chat">Trò chuyện cá nhân</option>
@@ -21,10 +21,17 @@
                                     <img src="images/users/group-avatar-trungquandev.png" alt="">
                                 </div>
                                 <span class="name">
-                                    <span class="group-chat-name">Group:</span> <%= conversation.name %>
+                                    <span class="group-chat-name"> 
+                                        <!-- Dùng substr cắt chuỗi khi tên hiển thị quá dài -->
+                                        <% if (conversation.name.length > 15) { %>
+                                            <%= conversation.name.substr(0, 14) %><span>...</span>
+                                        <% } else { %>
+                                            <%= conversation.name %>
+                                        <% } %>
+                                    </span>
                                 </span>
-                                <span class="time">Hai giờ trước fake</span>
-                                <span class="preview">Chào cả nhóm fake</span>
+                                <span class="time">Hai giờ trước</span>
+                                <span class="preview">Chào cả nhóm</span>
                             </li>
                         </a>
                     <%  } else { %>
@@ -35,7 +42,12 @@
                                     <img src="images/users/<%= conversation.avatar %>" alt="">
                                 </div>
                                 <span class="name">
-                                    <%= conversation.username %>
+                                    <!-- Dùng substr cắt chuỗi khi tên hiển thị quá dài -->
+                                    <% if (conversation.username.length > 15) { %>
+                                        <%= conversation.username.substr(0, 14) %><span>...</span>
+                                    <% } else { %>
+                                        <%= conversation.username %>
+                                    <% } %>
                                 </span>
                                 <span class="time">Một phút trước</span>
                                 <span class="preview">Xin chào</span>
@@ -65,7 +77,12 @@
                                 <img src="images/users/<%= conversation.avatar %>" alt="">
                             </div>
                             <span class="name">
-                                <%= conversation.username %>
+                                <!-- Dùng substr cắt chuỗi khi tên hiển thị quá dài -->
+                                <% if (conversation.username.length > 15) { %>
+                                    <%= conversation.username.substr(0, 14) %><span>...</span>
+                                <% } else { %>
+                                    <%= conversation.username %>
+                                <% } %>
                             </span>
                             <span class="time">Một phút trước</span>
                             <span class="preview">Xin chào</span>
@@ -94,10 +111,17 @@
                                 <img src="images/users/group-avatar-trungquandev.png" alt="">
                             </div>
                             <span class="name">
-                                <span class="group-chat-name">Group:</span> <%= conversation.name %>
+                                <span class="group-chat-name"> 
+                                    <!-- Dùng substr cắt chuỗi khi tên hiển thị quá dài -->
+                                    <% if (conversation.name.length > 15) { %>
+                                        <%= conversation.name.substr(0, 14) %><span>...</span>
+                                    <% } else { %>
+                                        <%= conversation.name %>
+                                    <% } %>
+                                </span>
                             </span>
-                            <span class="time">Hai giờ trước fake</span>
-                            <span class="preview">Chào cả nhóm fake</span>
+                            <span class="time">Hai giờ trước</span>
+                            <span class="preview">Chào cả nhóm</span>
                         </li>
                     </a>
                 <%  }); %>
