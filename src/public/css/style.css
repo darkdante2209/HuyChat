@@ -740,6 +740,7 @@ label:focus,
   color: #1a1a1a;
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 600;
+  padding-right: 65px;
 }
 
 .left .people .person .time {

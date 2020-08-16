@@ -12,7 +12,7 @@ let removeContact = (io) => {
         //Đưa socket id vào mảng
         clients = pushSocketIdToArray(clients, socket.request.user._id, socket.id);
 
-        socket.on("remove-contact", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
+        socket.on("remove-contact", (data) => {//Lắng nghe sự kiện mình tạo ra từ removeContact.js
             let currentUser = {
                 id: socket.request.user._id
             };

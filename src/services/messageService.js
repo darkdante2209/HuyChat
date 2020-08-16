@@ -20,11 +20,11 @@ let getAllConversationItems = (currentUserId) => {
                     // Vì contact và getUserContact đang đồng bồ với nhau là từ mongodb trả về cho mình
                     // getUserContact lấy từ UserModel trên, còn contact lấy từ ContactModel
                     // nên có thể gán cho nhau được
-                    getUserContact.createdAt = contact.createdAt;
+                    getUserContact.updatedAt = contact.updatedAt;
                     return getUserContact;
                 } else {
                     let getUserContact = await UserModel.getNormalUserDataById (contact.contactId);
-                    getUserContact.createdAt = contact.createdAt;
+                    getUserContact.updatedAt = contact.updatedAt;
                     return getUserContact;
                 }
             });
@@ -33,7 +33,7 @@ let getAllConversationItems = (currentUserId) => {
             let allConversations = userConversations.concat(groupConversations);//Ghép hai mảng trò chuyện
             
             allConversations = _.sortBy(allConversations, (item) => {
-                return -item.createdAt;// Để dấu - sẽ sắp xếp từ lớn đến nhỏ, ko thì sẽ từ nhỏ đến lớn
+                return -item.updatedAt;// Để dấu - sẽ sắp xếp từ lớn đến nhỏ, ko thì sẽ từ nhỏ đến lớn
             });
 
             resolve({
