@@ -18,13 +18,12 @@ function textAndEmojiChat(divId){
             }
 
             // Gọi gửi tin nhắn lên
-            console.log(dataTextEmojiForSend);
             $.post("/message/add-new-text-emoji", dataTextEmojiForSend, function(data) {
                 //success
-
+                console.log(data.message);
             }).fail(function(response){
                 //errors
-
+                alertify.notify(response.responseText, "error", 7);
             });
 
         }

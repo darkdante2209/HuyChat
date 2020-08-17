@@ -26,6 +26,13 @@ let MessageSchema = new Schema({
 
 MessageSchema.statics = {
   /**
+   * Tạo mới tin nhắn
+   * @param {object} item 
+   */
+  createNew(item) {
+    return this.create(item);
+  },
+  /**
    * Lấy ra tin nhắn từ cá nhân
    * @param {string} senderId currentUserId
    * @param {string} receiverId id của liên hệ
