@@ -63,6 +63,15 @@ function textAndEmojiChat(divId){
                 // Step 06: Emit real time
                 socket.emit("chat-text-emoji", dataToEmit);
 
+                // Step 07: Emit xóa typing real-time
+                typingOff(divId);
+
+                // Step 08: nếu đang có typing real-time, xóa ngay lập tức
+                let checkTyping = $(`.chat[data-chat=${divId}]`).find("div.bubble-typing-gif");
+                if (checkTyping.length) {
+                    checkTyping.remove();
+                }
+
             }).fail(function(response){
                 //errors
                 alertify.notify(response.responseText, "error", 7);
