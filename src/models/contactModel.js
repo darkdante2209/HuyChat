@@ -251,6 +251,28 @@ ContactSchema.statics = {
         {"status": false}
       ]
     }).sort({"createdAt": -1}).skip(skip).limit(limit).exec();
+  },
+
+  /**
+   * Update khi có thêm tin nhắn mới
+   * @param {string} userId user id hiện tại
+   * @param {string} contactId contact id
+   */
+  updateWhenHasNewMessage(userId, contactId) {
+    return this.update({
+      $or: [
+        {$and: [
+          {"userId": userId},
+          {"contactId": contactId}
+        ]},
+        {$and: [
+          {"userId": contactId},
+          {"contactId": userId}
+        ]}
+      ]
+    }, {
+      "updatedAt": Date.now()
+    }).exec();
   }
 };
 

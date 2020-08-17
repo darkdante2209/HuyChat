@@ -25,6 +25,22 @@ ChatGroupSchema.statics = {
     return this.find({
       "members": {$elemMatch: {"userId": userId}}//Nếu có userId trùng với điều kiện thì elemMatch sẽ lấy cả mảng chứa userId đó
     }).sort({"updatedAt": -1}).limit(limit).exec();
+  },
+
+  getChatGroupById(id) {
+    return this.findById(id).exec();
+  },
+
+  /**
+   * Update chat group khi có tin nhắn mới
+   * @param {string} id của group chat
+   * @param {number} newMessageAmount 
+   */
+  updateWhenHasNewMessage(id, newMessageAmount) {
+    return this.findByIdAndUpdate(id, {
+      "messageAmount": newMessageAmount,
+      "updatedAt": Date.now()
+    }).exec();
   }
 };
 
