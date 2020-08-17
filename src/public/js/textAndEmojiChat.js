@@ -25,7 +25,7 @@ function textAndEmojiChat(divId){
                 };
 
                 //Step 01: Xử lý message data trước khi hiển thị
-                let messageOfMe = $(`<div class="convert-emoji bubble me data-mess-id="${data.message._id}"></div>`);
+                let messageOfMe = $(`<div class="bubble me" data-mess-id="${data.message._id}"></div>`);
                 messageOfMe.text(data.message.text);
                 let converEmojiMessage = emojione.toImage(messageOfMe.html());
 
@@ -85,7 +85,7 @@ $(document).ready(function () {
     socket.on("response-chat-text-emoji", function(response) {
         let divId = "";
         //Step 01: Xử lý message data trước khi hiển thị
-        let messageOfYou = $(`<div class="convert-emoji bubble you data-mess-id="${response.message._id}"></div>`);
+        let messageOfYou = $(`<div class="bubble you" data-mess-id="${response.message._id}"></div>`);
         messageOfYou.text(response.message.text);
         let converEmojiMessage = emojione.toImage(messageOfYou.html());
 
