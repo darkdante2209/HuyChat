@@ -33,7 +33,7 @@
                                 <span class="time">
                                     <%= convertTimestampToHumanTime(lastItemOfArray(conversation.messages).createdAt) %>
                                 </span>
-                                <span class="preview">
+                                <span class="preview convert-emoji">
                                     <% if (lastItemOfArray(conversation.messages).messageType === "text") { %>
                                         <!-- Chuỗi string đã bị cắt trong css preview -->
                                         <%= lastItemOfArray(conversation.messages).text %>
@@ -65,7 +65,7 @@
                                 <span class="time">
                                     <%= convertTimestampToHumanTime(lastItemOfArray(conversation.messages).createdAt) %>
                                 </span>
-                                <span class="preview">
+                                <span class="preview convert-emoji">
                                     <% if (lastItemOfArray(conversation.messages).messageType === "text") { %>
                                         <!-- Chuỗi string đã bị cắt trong css preview -->
                                         <%= lastItemOfArray(conversation.messages).text %>
@@ -114,7 +114,7 @@
                                 <span class="time">
                                     <%= convertTimestampToHumanTime(lastItemOfArray(conversation.messages).createdAt) %>
                                 </span>
-                                <span class="preview">
+                                <span class="preview convert-emoji">
                                     <% if (lastItemOfArray(conversation.messages).messageType === "text") { %>
                                         <!-- Chuỗi string đã bị cắt trong css preview -->
                                         <%= lastItemOfArray(conversation.messages).text %>
@@ -165,7 +165,7 @@
                                 <span class="time">
                                     <%= convertTimestampToHumanTime(lastItemOfArray(conversation.messages).createdAt) %>
                                 </span>
-                                <span class="preview">
+                                <span class="preview convert-emoji">
                                     <% if (lastItemOfArray(conversation.messages).messageType === "text") { %>
                                         <!-- Chuỗi string đã bị cắt trong css preview -->
                                         <%= lastItemOfArray(conversation.messages).text %>

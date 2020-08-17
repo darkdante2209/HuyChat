@@ -102,3 +102,7 @@ dist
 
 # TernJS port file
 .tern-port
+
+src/public/bower_components
+
+src/public/emojione
