@@ -16,6 +16,7 @@
     "tests"
   ],
   "dependencies": {
-    "bower_components": "https://github.com/darkdante2209/HuyChat-third-party-libraries.git"
+    "bower_components": "https://github.com/darkdante2209/HuyChat-third-party-libraries.git",
+    "emojione": "4.5.0"
   }
 }
