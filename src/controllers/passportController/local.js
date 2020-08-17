@@ -1,6 +1,7 @@
 import passport from "passport";
 import passportLocal from "passport-local";
 import UserModel from "./../../models/userModel";
+import ChatGroupModel from "./../../models/chatGroupModel";
 import {transErrors, transSuccess} from "./../../../lang/vi";
 
 let LocalStrategy = passportLocal.Strategy;
@@ -40,15 +41,16 @@ let initPassportLocal = () => {
   });
   //Dùng User model, lấy toàn bộ thông tin của user theo id
 
-  passport.deserializeUser((id, done) => { 
-    //Lưu toàn bộ thông tin vào biến req.user
-    UserModel.findUserByIdForSessionToUse(id)
-      .then(user => {
-        return done(null, user);
-      })
-      .catch(error => {
-        return done(error, null);
-      });
+  passport.deserializeUser(async (id, done) => { 
+    try {
+      let user = await UserModel.findUserByIdForSessionToUse(id);
+      let getChatGroupIds = await ChatGroupModel.getChatGroupIdsByUser(user._id);
+      user = user.toObject();
+      user.chatGroupIds = getChatGroupIds;
+      return done(null, user);
+    } catch (error) {
+      return done(error, null);
+    }
   });
 };
 
