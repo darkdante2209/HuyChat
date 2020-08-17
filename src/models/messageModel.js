@@ -9,12 +9,12 @@ let MessageSchema = new Schema({
   messageType: String,
   sender: {
     id: String,
-    username: String,
+    name: String,
     avatar: String
   },
   receiver: {
     id: String,
-    username: String,
+    name: String,
     avatar: String
   },
   text: String,
@@ -26,12 +26,12 @@ let MessageSchema = new Schema({
 
 MessageSchema.statics = {
   /**
-   * Lấy ra số lượng giới hạn item một lần
+   * Lấy ra tin nhắn từ cá nhân
    * @param {string} senderId currentUserId
-   * @param {string} receiverId 
+   * @param {string} receiverId id của liên hệ
    * @param {number} limit 
    */
-  getMessages(senderId, receiverId, limit) {
+  getMessagesInPersonal(senderId, receiverId, limit) {
     return this.find({
       $or: [
         {$and: [
@@ -44,6 +44,15 @@ MessageSchema.statics = {
         ]}
       ]
     }).sort({"createdAt": 1}).limit(limit).exec();
+  },
+
+  /**
+   *  Lấy tin nhắn từ group chat
+   * @param {string} receiverId Id của một group chat 
+   * @param {number} limit 
+   */
+  getMessagesInGroup(receiverId, limit) {
+    return this.find({"receiverId": receiverId}).sort({"createdAt": 1}).limit(limit).exec();
   }
 };
 
