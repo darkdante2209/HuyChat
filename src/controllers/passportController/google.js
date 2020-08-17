@@ -1,6 +1,7 @@
 import passport from "passport";
 import passportGoogle  from "passport-google-oauth";
 import UserModel from "./../../models/userModel";
+import ChatGroupModel from "./../../models/chatGroupModel";
 import {transErrors, transSuccess} from "./../../../lang/vi";
 
 let GoogleStrategy = passportGoogle.OAuth2Strategy;
@@ -50,15 +51,19 @@ let initPassportGoogle = () => {
   });
   //Dùng User model, lấy toàn bộ thông tin của user theo id
 
-  passport.deserializeUser((id, done) => { 
+  passport.deserializeUser(async (id, done) => { 
     //Lưu toàn bộ thông tin vào biến req.user
-    UserModel.findUserByIdForSessionToUse(id)
-      .then(user => {
+      try {
+        let user = await UserModel.findUserByIdForSessionToUse(id);
+        let getChatGroupIds = await ChatGroupModel.getChatGroupIdsByUser(user._id);
+
+        user = user.toObject();
+        user.chatGroupIds = getChatGroupIds;
         return done(null, user);
-      })
-      .catch(error => {
+      } catch (error) {
         return done(error, null);
-      });
+      }
+      //Lưu toàn bộ thông tin vào biến req.user
   });
 };
 

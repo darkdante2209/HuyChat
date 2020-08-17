@@ -1,6 +1,7 @@
 import passport from "passport";
 import passportFacebook from "passport-facebook";
 import UserModel from "./../../models/userModel";
+import ChatGroupModel from "./../../models/chatGroupModel";
 import {transErrors, transSuccess} from "./../../../lang/vi";
 
 let FacebookStrategy = passportFacebook.Strategy;
@@ -51,15 +52,19 @@ let initPassportFacebook = () => {
   });
   //Dùng User model, lấy toàn bộ thông tin của user theo id
 
-  passport.deserializeUser((id, done) => { 
+  passport.deserializeUser(async (id, done) => { 
     //Lưu toàn bộ thông tin vào biến req.user
-    UserModel.findUserByIdForSessionToUse(id)
-      .then(user => {
-        return done(null, user);
-      })
-      .catch(error => {
-        return done(error, null);
-      });
+    try {
+      let user = await UserModel.findUserByIdForSessionToUse(id);
+      let getChatGroupIds = await ChatGroupModel.getChatGroupIdsByUser(user._id);
+
+      user = user.toObject();
+      user.chatGroupIds = getChatGroupIds;
+      return done(null, user);
+    } catch (error) {
+      return done(error, null);
+    }
+    //Lưu toàn bộ thông tin vào biến req.user
   });
 };
 
