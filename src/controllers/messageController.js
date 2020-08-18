@@ -5,6 +5,8 @@ import {app} from "./../config/app";
 import {transErrors, transSuccess} from "./../../lang/vi";
 import fsExtra from "fs-extra";
 
+
+// Xử lý text và emoji chat
 let addNewTextEmoji = async (req, res) => {
     let errorArr = [];
     let validationErrors = validationResult(req);
@@ -32,6 +34,8 @@ let addNewTextEmoji = async (req, res) => {
         return res.status(500).send(errorArr);
     }
 };
+
+// Xử lý image chat
 
 let storageImageChat = multer.diskStorage({
     destination: (req, file, callback) => {
@@ -83,7 +87,55 @@ let addNewImage = (req, res) => {
     });
 };
 
+// Xử lý attachment chat
+
+let storageAttachmentChat = multer.diskStorage({
+    destination: (req, file, callback) => {
+        callback(null, app.attachment_message_directory);
+    },
+    filename: (req, file, callback) => {
+        let attachmentName = `${file.originalname}`;
+        callback(null, attachmentName);
+    }
+});
+
+let attachmentMessageUploadFile = multer({
+    storage: storageAttachmentChat,
+    limits: {fileSize: app.attachment_message_limit_size}
+}).single("my-attachment-chat");//my-attachment-chat là tag name của input nhập file trong div attachment-chat rightSide.ejs
+
+let addNewAttachment = (req, res) => {
+    attachmentMessageUploadFile(req, res, async (error) => {
+        if (error) {
+            if (error.message) {
+                return res.status(500).send(transErrors.attachment_message_size);
+            }
+            return res.status(500).send(error);
+        }
+        try {
+            let sender = {
+                id: req.user._id,
+                name: req.user.username,
+                avatar: req.user.avatar,
+            };
+            let receiverId = req.body.uid;
+            let messageVal = req.file;//Sau khi handle file qua multer thì sẽ được biến req.file này
+            let isChatGroup = req.body.isChatGroup;
+    
+            let newMessage = await message.addNewAttachment(sender, receiverId, messageVal, isChatGroup);
+
+            // Remove tệp bởi vì tệp đã được xóa trong mongodb
+            await fsExtra.remove(`${app.attachment_message_directory}/${newMessage.file.fileName}`);
+
+            return res.status(200).send({message: newMessage});
+        } catch (error) {
+            return res.status(500).send(errorArr);
+        }
+    });
+};
+
 module.exports = {
     addNewTextEmoji: addNewTextEmoji,
-    addNewImage: addNewImage
+    addNewImage: addNewImage,
+    addNewAttachment: addNewAttachment
 };

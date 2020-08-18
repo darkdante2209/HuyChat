@@ -1,16 +1,10 @@
-function imageChat(divId) {
-    $(`#image-chat-${divId}`).unbind("change").on("change", function() {
+function attachmentChat(divId) {
+    $(`#attachment-chat-${divId}`).unbind("change").on("change", function() {
         let fileData = $(this).prop("files")[0];
-        let math = ["image/png", "image/jpg", "image/jpeg"];
-        let limit = 1048576;//byte = 1MB
+        let limit = 5242880;//byte = 1MB
 
-        if ($.inArray(fileData.type, math) === -1) {
-            alertify.notify("Kiểu file không hợp lệ, chỉ chấp nhận jpg, jpeg hoặc png.", "error", 7); //7 là thời gian hiển thị báo lỗi
-            $(this).val(null);
-            return false;
-        }
         if (fileData.size > limit) {
-            alertify.notify("Ảnh upload tối đa cho phép là 1MB", "error", 7); //7 là thời gian hiển thị báo lỗi
+            alertify.notify("Tệp tin đính kèm tối đa cho phép là 5MB", "error", 7); //7 là thời gian hiển thị báo lỗi
             $(this).val(null);
             return false;
         }
@@ -19,7 +13,7 @@ function imageChat(divId) {
         let isChatGroup = false;
 
         let messageFormData = new FormData();
-        messageFormData.append("my-image-chat", fileData);//my-image-chat là tag name của input nhập ảnh trong div image-chat rightSide.ejs
+        messageFormData.append("my-attachment-chat", fileData);//my-attachment-chat là tag name của input nhập file trong div attachment-chat rightSide.ejs
         messageFormData.append("uid", targetId);
 
         if ($(this).hasClass("chat-in-group")) {
@@ -28,7 +22,7 @@ function imageChat(divId) {
         }
 
         $.ajax({
-            url: "/message/add-new-image",
+            url: "/message/add-new-attachment",
             type: "post",//Quy tắc chuẩn khi mình update trường dữ liệu của restfulAPI
             cache: false,
             contentType: false,
@@ -38,19 +32,20 @@ function imageChat(divId) {
                 let dataToEmit = {
                     message: data.message
                 };
-
                 //Step 01: Xử lý message data trước khi hiển thị
-                let messageOfMe = $(`<div class="bubble me bubble-image-file" data-mess-id="${data.message._id}"></div>`);
-                let imageChat = `<img src="data:${data.message.file.contentType}; base64,  ${bufferToBase64(data.message.file.data.data)}" class="show-image-chat">`;
+                let messageOfMe = $(`<div class="bubble me bubble-attachment-file" data-mess-id="${data.message._id}"></div>`);
+                let attachmentChat = `<a href="data:${data.message.file.contentType}; base64, ${bufferToBase64(data.message.file.data.data)}" download="${data.message.file.fileName}">
+                    ${data.message.file.fileName}
+                </a>`;
 
                 if (isChatGroup) {
                     let senderAvatar = `<img src="/images/users/${data.message.sender.avatar}" class="avatar-small" title="${data.message.sender.name}">`;
-                    messageOfMe.html(`${senderAvatar} ${imageChat}`);
+                    messageOfMe.html(`${senderAvatar} ${attachmentChat}`);
                     
                     increaseNumberMessageGroup(divId);
                     dataToEmit.groupId = targetId;
                 } else {
-                    messageOfMe.html(imageChat);
+                    messageOfMe.html(attachmentChat);
 
                     dataToEmit.contactId = targetId;
                 }
@@ -61,7 +56,7 @@ function imageChat(divId) {
 
                 // Step 04: Cập nhật tin nhắn preview và thời gian cột liên hệ bên trái
                 $(`.person[data-chat=${divId}]`).find("span.time").removeClass("message-time-realtime").html(moment(data.message.createdAt).locale("vi").startOf("seconds").fromNow());
-                $(`.person[data-chat=${divId}]`).find("span.preview").html("Hình ảnh...");
+                $(`.person[data-chat=${divId}]`).find("span.preview").html("Tệp đính kèm...");
 
                 // Step 05: Đưa cuộc trò chuyện lên mới nhất
                 $(`.person[data-chat=${divId}]`).on("eventMoveTop.moveConversationToTheTop", function() {
@@ -70,34 +65,38 @@ function imageChat(divId) {
                     $(this).off("eventMoveTop.moveConversationToTheTop");
                 });
                 $(`.person[data-chat=${divId}]`).trigger("eventMoveTop.moveConversationToTheTop");
-
+                
                 // Step 06: Emit real time
-                socket.emit("chat-image", dataToEmit);
+                socket.emit("chat-attachment", dataToEmit);
 
-                // Step 09: Thêm ảnh vào modal image
-                let imageChatToAddModal = `<img src="data:${data.message.file.contentType}; base64,  ${bufferToBase64(data.message.file.data.data)}">`;
-                $(`#imagesModal_${divId}`).find("div.all-images").append(imageChatToAddModal);
-
-
+                // Step 09: Thêm ảnh vào modal attachment
+                let attachmentChatToAddModal = `<li>
+                    <a href="data:${data.message.file.contentType}; base64, ${bufferToBase64(data.message.file.data.data)}" download="${data.message.file.fileName}">
+                        ${data.message.file.fileName}
+                    </a>
+                </li>`;
+                $(`#attachmentsModal_${divId}`).find("ul.list-attachments").append(attachmentChatToAddModal);
             },
             error: function(error) {
                 alertify.notify(error.responseText, "error", 7);
             },
         });
-
     });
 }
 
 $(document).ready(function() {
-    socket.on("response-chat-image", function(response) {
+    socket.on("response-chat-attachment", function(response) {
         let divId = "";
         //Step 01: Xử lý message data trước khi hiển thị
-        let messageOfYou = $(`<div class="bubble you bubble-image-file" data-mess-id="${response.message._id}"></div>`);
-        let imageChat = `<img src="data:${response.message.file.contentType}; base64,  ${bufferToBase64(response.message.file.data.data)}" class="show-image-chat">`;
+        let messageOfYou = $(`<div class="bubble you bubble-attachment-file" data-mess-id="${response.message._id}"></div>`);
+
+        let attachmentChat = `<a href="data:${response.message.file.contentType}; base64, ${bufferToBase64(response.message.file.data.data)}" download="${response.message.file.fileName}">
+            ${response.message.file.fileName}
+        </a>`;
 
         if (response.currentGroupId) {
             let senderAvatar = `<img src="/images/users/${response.message.sender.avatar}" class="avatar-small" title="${response.message.sender.name}">`;
-            messageOfYou.html(`${senderAvatar} ${imageChat}`);
+            messageOfYou.html(`${senderAvatar} ${attachmentChat}`);
             
             divId = response.currentGroupId;
 
@@ -105,9 +104,9 @@ $(document).ready(function() {
                 increaseNumberMessageGroup(divId);
             }
         } else {
-            messageOfYou.html(imageChat);
+            messageOfYou.html(attachmentChat);
             divId = response.currentUserId;
-        }    
+        }   
 
         //Step 02: Nạp dữ liệu tin nhắn vào màn hình
         if (response.currentUserId !== $("#dropdown-navbar-user").data("uid")) {
@@ -118,7 +117,7 @@ $(document).ready(function() {
 
         // Step 04: Cập nhật tin nhắn preview và thời gian cột liên hệ bên trái
         $(`.person[data-chat=${divId}]`).find("span.time").html(moment(response.message.createdAt).locale("vi").startOf("seconds").fromNow());
-        $(`.person[data-chat=${divId}]`).find("span.preview").html("Hình ảnh...");
+        $(`.person[data-chat=${divId}]`).find("span.preview").html("Tệp đính kèm...");
 
         // Step 05: Đưa cuộc trò chuyện lên mới nhất
         $(`.person[data-chat=${divId}]`).on("eventMoveTop.moveConversationToTheTop", function() {
@@ -128,11 +127,14 @@ $(document).ready(function() {
         });
         $(`.person[data-chat=${divId}]`).trigger("eventMoveTop.moveConversationToTheTop");
 
-        // Step 09: Thêm ảnh vào modal image
+        // Step 09: Thêm ảnh vào modal attachment
         if (response.currentUserId !== $("#dropdown-navbar-user").data("uid")) {
-            let imageChatToAddModal = `<img src="data:${response.message.file.contentType}; base64,  ${bufferToBase64(response.message.file.data.data)}">`;
-            $(`#imagesModal_${divId}`).find("div.all-images").append(imageChatToAddModal);
+            let attachmentChatToAddModal = `<li>
+                <a href="data:${response.message.file.contentType}; base64, ${bufferToBase64(response.message.file.data.data)}" download="${response.message.file.fileName}">
+                ${response.message.file.fileName}
+                </a>
+            </li>`;
+            $(`#attachmentsModal_${divId}`).find("ul.list-attachments").append(attachmentChatToAddModal);
         }
-
     });
 });
