@@ -425,11 +425,15 @@ label:focus,
   background-color: #eceff1;
 }
 
+.navbar-inverse {
+  background-color: #03885D;
+  border-color: #03885D ;
+}
+
 .navbar-brand>img {
-  margin: -12px 0px 0px 7px;
+  display: block;
+  margin: 0 auto;
   width: 150px;
-  -webkit-filter: brightness(130%);
-  filter: brightness(130%);
 }
 
 .navbar {

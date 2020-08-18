@@ -1,7 +1,6 @@
 /*
  *
  * login-register modal css
- * https://trungquandev.com
  *
 /*  Shake animation  */
 
@@ -13,15 +12,13 @@ body {
   /*position: fixed;*/
   /*width: 100%;*/
   height: 100vh;
-  background-color: #f8f8f8;
+  background-color: #09C085;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 400;
-  background-image: url("../images/background/image.jpg");
-  background-size: cover;
-  background-repeat: none;
+  
   color: #fff;
 }
 
@@ -339,7 +336,7 @@ hr {
 
 .big-login,
 .big-register {
-  background-color: #00bbff;
+  background-color: #03885D;
   color: #FFFFFF;
   border-radius: 7px;
   border-width: 2px;
@@ -357,9 +354,8 @@ hr {
 }
 
 .big-register {
-  background-color: rgba(0, 0, 0, .0);
-  color: #00bbff;
-  border-color: #00bbff;
+  background-color:#03885D;
+  color: #FFFFFF;
 }
 
 .big-register:hover {
