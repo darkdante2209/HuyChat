@@ -14,13 +14,13 @@ let typingOn = (io) => {
         socket.request.user.chatGroupIds.forEach(group => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
-        socket.on("user-is-typing", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
+        socket.on("user-is-typing", (data) => {
             if (data.groupId) {
                 let response = {
                     currentGroupId: data.groupId,
                     currentUserId: socket.request.user._id
                 };
-                //Kiểm tra contact id từ data gửi vào socket trong addContact.js
+                
                 if (clients[data.groupId]) {
                     emitNotifyToArray(clients, data.groupId, io, "response-user-is-typing", response);
                 }
@@ -29,7 +29,7 @@ let typingOn = (io) => {
                 let response = {
                     currentUserId: socket.request.user._id
                 };
-                //Kiểm tra contact id từ data gửi vào socket trong addContact.js
+                
                 if (clients[data.contactId]) {
                     emitNotifyToArray(clients, data.contactId, io, "response-user-is-typing", response);
                 }

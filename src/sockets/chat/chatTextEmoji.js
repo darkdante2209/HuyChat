@@ -15,14 +15,14 @@ let chatTextEmoji = (io) => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
         // console.log(clients);
-        socket.on("chat-text-emoji", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
+        socket.on("chat-text-emoji", (data) => {
             if (data.groupId) {
                 let response = {
                     currentGroupId: data.groupId,
                     currentUserId: socket.request.user._id,
                     message: data.message
                 };
-                //Kiểm tra contact id từ data gửi vào socket trong addContact.js
+
                 if (clients[data.groupId]) {
                     emitNotifyToArray(clients, data.groupId, io, "response-chat-text-emoji", response);
                 }
@@ -32,7 +32,7 @@ let chatTextEmoji = (io) => {
                     currentUserId: socket.request.user._id,
                     message: data.message
                 };
-                //Kiểm tra contact id từ data gửi vào socket trong addContact.js
+
                 if (clients[data.contactId]) {
                     emitNotifyToArray(clients, data.contactId, io, "response-chat-text-emoji", response);
                 }

@@ -14,14 +14,14 @@ let chatImage = (io) => {
         socket.request.user.chatGroupIds.forEach(group => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
-        socket.on("chat-image", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
+        socket.on("chat-image", (data) => {
             if (data.groupId) {
                 let response = {
                     currentGroupId: data.groupId,
                     currentUserId: socket.request.user._id,
                     message: data.message
                 };
-                //Kiểm tra contact id từ data gửi vào socket trong addContact.js
+
                 if (clients[data.groupId]) {
                     emitNotifyToArray(clients, data.groupId, io, "response-chat-image", response);
                 }
@@ -31,7 +31,7 @@ let chatImage = (io) => {
                     currentUserId: socket.request.user._id,
                     message: data.message
                 };
-                //Kiểm tra contact id từ data gửi vào socket trong addContact.js
+
                 if (clients[data.contactId]) {
                     emitNotifyToArray(clients, data.contactId, io, "response-chat-image", response);
                 }
