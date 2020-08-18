@@ -51,6 +51,12 @@ ChatGroupSchema.statics = {
     return this.find({
       "members": {$elemMatch: {"userId": userId}}//Nếu có userId trùng với điều kiện thì elemMatch sẽ lấy cả mảng chứa userId đó
     },{_id: 1}).exec();
+  },
+
+  readMoreChatGroups(userId, skip, limit) {
+    return this.find({
+      "members": {$elemMatch: {"userId": userId}}//Nếu có userId trùng với điều kiện thì elemMatch sẽ lấy cả mảng chứa userId đó
+    }).sort({"updatedAt": -1}).skip(skip).limit(limit).exec();
   }
 };
 
