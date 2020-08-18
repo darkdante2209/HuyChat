@@ -102,7 +102,27 @@ UserSchema.statics = {
 
   getNormalUserDataById(id) {
     return this.findById(id, {_id: 1, username: 1, address: 1, avatar: 1}).exec();
-  }
+  },
+
+  /**
+   * Tìm user để thêm vào group chat
+   * @param {array: friend userIds} id các tài khoản đã thêm vào 
+   * @param {string: keyword search} keyword 
+   */
+  findAllToAddGroupChat(friendIds, keyword) {
+    return this.find({
+      $and: [
+        {"_id": {$in: friendIds}},
+        {"local.isActive": true},
+        {$or: [
+          {"username": {"$regex": new RegExp(keyword, "i") }},//$regex là cú pháp của mongoose để tìm username gần giống keyword nhất.
+          {"local.email": {"$regex": new RegExp(keyword, "i") }},//i trong RegExp để không phân biệt chữ hoa chữ thường
+          {"facebook.email": {"$regex": new RegExp(keyword, "i") }},
+          {"google.email": {"$regex": new RegExp(keyword, "i") }}
+        ]}
+      ]
+    }, {_id: 1, username: 1, address: 1, avatar: 1}).exec();//1 có nghĩa là được lấy ra
+  },
 };
 //Methods: Khi đã có bản ghi, gọi đến phương thức trong methods để thực hiện công việc
 UserSchema.methods = {
