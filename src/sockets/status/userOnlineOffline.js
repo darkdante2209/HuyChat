@@ -15,15 +15,26 @@ let userOnlineOffline = (io) => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
 
-        let listUserOnline = Object.keys(clients);
+        // Khi có cuộc trò chuyện mới sẽ push lai socket id
+        socket.on("new-group-created", (data) => {
+            clients = pushSocketIdToArray(clients, data.groupChat._id, socket.id);
+        });
 
-        // Step 01: Đẩy mảng chứa key id về phía user sau khi login hay reload trang web
-        socket.emit("server-send-list-users-online", listUserOnline);
+        socket.on("member-received-group-chat", (data) => {
+            clients = pushSocketIdToArray(clients, data.groupChatId, socket.id);
+        });
 
-        // Step 02: Đẩy sự kiện tới toàn bộ users khi có user mới online
-        socket.broadcast.emit("server-send-when-new-user-online", socket.request.user._id);
+        socket.on("check-status", () => {
+            let listUserOnline = Object.keys(clients);
 
+            // Step 01: Đẩy mảng chứa key id về phía user sau khi login hay reload trang web
+            socket.emit("server-send-list-users-online", listUserOnline);
 
+            // Step 02: Đẩy sự kiện tới toàn bộ users khi có user mới online
+            socket.broadcast.emit("server-send-when-new-user-online", socket.request.user._id);
+        });
+
+        
         socket.on("disconnect", () => {
             clients = removeSocketIdFromArray(clients, socket.request.user._id, socket);
             socket.request.user.chatGroupIds.forEach(group => {

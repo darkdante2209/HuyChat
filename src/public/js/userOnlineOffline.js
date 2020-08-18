@@ -1,3 +1,7 @@
+// Step 0: 
+socket.emit("check-status");
+
+
 // Step 01: Gửi mảng id các user online về clients
 socket.on("server-send-list-users-online", function(listUserIds) {
     listUserIds.forEach(userId => {
