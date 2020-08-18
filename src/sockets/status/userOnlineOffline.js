@@ -4,7 +4,7 @@ import {pushSocketIdToArray, emitNotifyToArray, removeSocketIdFromArray} from ".
  * 
  * @param {*} io từ socket.io library
  */
-let typingOff = (io) => {
+let userOnlineOffline = (io) => {
     let clients = {};//Biến global
 
     io.on("connection", (socket) => {//Chạy khi truy cập trang web
@@ -14,36 +14,26 @@ let typingOff = (io) => {
         socket.request.user.chatGroupIds.forEach(group => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
-        socket.on("user-is-not-typing", (data) => {
-            if (data.groupId) {
-                let response = {
-                    currentGroupId: data.groupId,
-                    currentUserId: socket.request.user._id
-                };
 
-                if (clients[data.groupId]) {
-                    emitNotifyToArray(clients, data.groupId, io, "response-user-is-not-typing", response);
-                }
-            }
-            if (data.contactId) {
-                let response = {
-                    currentUserId: socket.request.user._id
-                };
+        let listUserOnline = Object.keys(clients);
 
-                if (clients[data.contactId]) {
-                    emitNotifyToArray(clients, data.contactId, io, "response-user-is-not-typing", response);
-                }
-            }
-        });
+        // Step 01: Đẩy mảng chứa key id về phía user sau khi login hay reload trang web
+        socket.emit("server-send-list-users-online", listUserOnline);
+
+        // Step 02: Đẩy sự kiện tới toàn bộ users khi có user mới online
+        socket.broadcast.emit("server-send-when-new-user-online", socket.request.user._id);
+
 
         socket.on("disconnect", () => {
             clients = removeSocketIdFromArray(clients, socket.request.user._id, socket);
             socket.request.user.chatGroupIds.forEach(group => {
                 clients = removeSocketIdFromArray(clients, group._id, socket);
             });
+            // Step 03: Đẩy về cho các user khác khi có user offline
+            socket.broadcast.emit("server-send-when-new-user-offline", socket.request.user._id);
         });
         // console.log(clients);
     });
 };
 
-module.exports = typingOff;
+module.exports = userOnlineOffline;

@@ -4,33 +4,34 @@ import request from "request";
 
 let getICETurnServer = () => {
   return new Promise(async (resolve, reject) => {
-    // Node Get ICE STUN and TURN list
-    let o = {
-      format: "urls"
-    };
-    let bodyString = JSON.stringify(o);
+    // // Node Get ICE STUN and TURN list
+    // let o = {
+    //   format: "urls"
+    // };
+    // let bodyString = JSON.stringify(o);
 
-    let options = {
-      url: "https://global.xirsys.net/_turn/huychat",
-      // host: "global.xirsys.net",
-      // path: "/_turn/huychat",
-      method: "PUT",
-      headers: {
-          "Authorization": "Basic " + Buffer.from("huychat:4e58da34-e14a-11ea-a0d0-0242ac150003").toString("base64"),
-          "Content-Type": "application/json",
-          "Content-Length": bodyString.length
-      }
-    };
+    // let options = {
+    //   url: "https://global.xirsys.net/_turn/huychat",
+    //   // host: "global.xirsys.net",
+    //   // path: "/_turn/huychat",
+    //   method: "PUT",
+    //   headers: {
+    //       "Authorization": "Basic " + Buffer.from("huychat:4e58da34-e14a-11ea-a0d0-0242ac150003").toString("base64"),
+    //       "Content-Type": "application/json",
+    //       "Content-Length": bodyString.length
+    //   }
+    // };
 
-    // Gọi một request dể lấy list ICE Turn Server:
-    request(options, (error, response, body) => {
-      if (error) {
-        console.log("Error when get ICE list: " + error);
-        return reject(error);
-      }
-      let bodyJson = JSON.parse(body);
-      resolve(bodyJson.v.iceServers);
-    });
+    // // Gọi một request dể lấy list ICE Turn Server:
+    // request(options, (error, response, body) => {
+    //   if (error) {
+    //     console.log("Error when get ICE list: " + error);
+    //     return reject(error);
+    //   }
+    //   let bodyJson = JSON.parse(body);
+    //   resolve(bodyJson.v.iceServers);
+    // });
+    resolve([]);
   });
 };
 

@@ -14,7 +14,7 @@ let chatVideo = (io) => {
         socket.request.user.chatGroupIds.forEach(group => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
-        socket.on("caller-check-listener-online-or-not", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
+        socket.on("caller-check-listener-online-or-not", (data) => {
             if(clients[data.listenerId]) {
                 //online
                 let response = {
