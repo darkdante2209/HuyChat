@@ -16,6 +16,10 @@ let ChatGroupSchema = new Schema({
 });
 
 ChatGroupSchema.statics = {
+
+  createNew(item) {
+    return this.create(item);
+  },
   /**
    * Lấy ra các item nhóm chat bằng userId và limit
    * @param {string} userId userId hiện tại

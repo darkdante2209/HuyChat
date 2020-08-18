@@ -4,7 +4,7 @@ import {transValidation} from "./../../lang/vi";
 let updateInfo = [
     check("username", transValidation.update_username)
     .optional()//Cho phép người dùng có thể không thay đổi giá trị này mà vẫn không được chấp nhận, nếu không, hệ thống vẫn sẽ chạy và báo lỗi
-    .isLength({min: 3, max: 30})
+    .isLength({min: 3, max: 17})
     .matches(/^[\s0-9a-zA-Z_ÀÁÂÃÈÉÊÌÍÒÓÔÕÙÚĂĐĨŨƠàáâãèéêìíòóôõùúăđĩũơƯĂẠẢẤẦẨẪẬẮẰẲẴẶẸẺẼỀỀỂưăạảấầẩẫậắằẳẵặẹẻẽềềểỄỆỈỊỌỎỐỒỔỖỘỚỜỞỠỢỤỦỨỪễệỉịọỏốồổỗộớờởỡợụủứừỬỮỰỲỴÝỶỸửữựỳỵỷỹ ]+$/),
     check("gender", transValidation.update_gender)
         .optional()
