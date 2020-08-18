@@ -13,6 +13,18 @@ function videoChat(divId) {
     });
 }
 
+function playVideoStream(videoTagId, stream) {
+    let video = document.getElementById(videoTagId);
+    video.srcObject = stream;
+    video.onloadeddata = function () {
+        video.play();
+    };
+}
+
+function closeVideoStream(stream) {
+    return stream.getTracks().forEach(track => track.stop());
+}
+
 $(document).ready(function() {
     // Step 02 của người gọi: trả về từ chối khi người dùng offline
     socket.on("server-send-listener-is-offline", function() {
@@ -20,10 +32,14 @@ $(document).ready(function() {
     });
 
     let getPeerId = "";
-    const peer = new Peer();
-    // console.log(peer);
+    const peer = new Peer({
+        key: "peerjs",
+        host: "peerjs-server-trungquandev.herokuapp.com",
+        secure: true,
+        port: 443,
+        // debug: 3 //log toàn bộ quy trình + lỗi
+    });
     peer.on("open", function(peerId) {
-        // console.log(peerId);
         getPeerId = peerId;
     });
     // Step 03 của người nghe: Lấy peer id và data
@@ -40,6 +56,8 @@ $(document).ready(function() {
         socket.emit("listener-emit-peer-id-to-server", dataToEmit);
     });
 
+    let timerInterval;
+
     // Step 05 của người gọi: server gửi data và peer id của người nghe về cho người gọi
     socket.on("server-send-peer-id-of-listener-to-caller", function(response) {
         let dataToEmit = {
@@ -53,7 +71,6 @@ $(document).ready(function() {
         // Step 06 của người gọi: Gửi yêu cầu thực hiện cuộc gọi lên server
         socket.emit("caller-request-call-to-server", dataToEmit);
 
-        let timerInterval;
         Swal.fire({
             title: `Đang gọi cho &nbsp; <span style="color: #2ECC71">${response.listenerName}</span> &nbsp; <i class="fa fa-volume-control-phone"></i>`,
             html:`
@@ -75,10 +92,12 @@ $(document).ready(function() {
                     socket.emit("caller-cancel-request-call-to-server", dataToEmit);
                 });
 
-                Swal.showLoading();
-                timerInterval = setInterval(() => {
-                    Swal.getContent().querySelector("strong").textContent = Math.ceil(Swal.getTimerLeft() / 1000);
-                }, 1000);
+                if (Swal.getContent().querySelector !== null) {
+                    Swal.showLoading();
+                    timerInterval = setInterval(() => {
+                        Swal.getContent().querySelector("strong").textContent = Math.ceil(Swal.getTimerLeft() / 1000);
+                    }, 1000);
+                }
             },
             onOpen: () => {
                 // Step 12 của người gọi: server gửi thông báo cuộc gọi bị từ chối về cho người gọi
@@ -97,12 +116,7 @@ $(document).ready(function() {
                     });
                 });
 
-                // Step 13 của người gọi: server gửi thông báo cuộc gọi được chấp nhận về cho người gọi
-                socket.on("server-send-accept-call-to-caller", function(response) {
-                    Swal.close();
-                    clearInterval(timerInterval);
-                    console.log("Caller ok........");
-                });
+
             },
             onClose: () => {
                 clearInterval(timerInterval);
@@ -121,7 +135,7 @@ $(document).ready(function() {
             listenerName: response.listenerName,
             listenerPeerId: response.listenerPeerId
         };
-        let timerInterval;
+
         Swal.fire({
             title: `&nbsp; <span style="color: #2ECC71">${response.callerName}</span> &nbsp; muốn trò chuyện video với bạn &nbsp; <i class="fa fa-volume-control-phone"></i>`,
             html:`
@@ -154,23 +168,18 @@ $(document).ready(function() {
                     socket.emit("listener-accept-request-call-to-server", dataToEmit);
                 });
 
-                Swal.showLoading();
-                timerInterval = setInterval(() => {
-                    Swal.getContent().querySelector("strong").textContent = Math.ceil(Swal.getTimerLeft() / 1000);
-                }, 1000);
+                if (Swal.getContent().querySelector !== null) {
+                    Swal.showLoading();
+                    timerInterval = setInterval(() => {
+                        Swal.getContent().querySelector("strong").textContent = Math.ceil(Swal.getTimerLeft() / 1000);
+                    }, 1000);
+                }
             },
             onOpen: () => {
                 // Step 09 của người nghe: nhận yêu cầu hủy cuộc gọi từ người gọi.
                 socket.on("server-send-cancel-request-call-to-listener", function(response) {
                     Swal.close();
                     clearInterval(timerInterval);
-                });
-
-                // Step 14 của người nghe: server gửi thông báo cuộc gọi được chấp nhận về kết nối người nghe
-                socket.on("server-send-accept-call-to-listener", function(response) {
-                    Swal.close();
-                    clearInterval(timerInterval);
-                    console.log("Listener ok........");
                 });
             },
             onClose: () => {
@@ -181,5 +190,94 @@ $(document).ready(function() {
           })
     });
 
+    // Step 13 của người gọi: server gửi thông báo cuộc gọi được chấp nhận về cho người gọi
+    socket.on("server-send-accept-call-to-caller", function(response) {
+        Swal.close();
+        clearInterval(timerInterval);
 
+        let getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia).bind(navigator);
+
+        // Config bật cả video và audio
+        getUserMedia({video: false, audio: true}, function(stream) {
+            // Hiện modal gọi video call
+            $("#streamModal").modal("show");
+
+            // Play stream của caller tại local
+            playVideoStream("local-stream", stream);
+
+            // Gọi tới listener
+            let call = peer.call(response.listenerPeerId, stream);
+
+            // listen và play stream của listener
+            call.on("stream", function(remoteStream) {
+                // Play stream của listener
+                playVideoStream("remote-stream", remoteStream);
+            });
+
+            // Close modal: remove stream
+            $("#streamModal").on("hidden.bs.modal", function() {
+                closeVideoStream(stream);
+                
+                Swal.fire({
+                    type:"info",
+                    title: `Đã kết thúc cuộc gọi với &nbsp; <span style="color: #2ECC71">${response.listenerName}</span> &nbsp;`,
+                    backdrop: "rgba(85, 85, 85, 0.4)",
+                    width: "52rem",
+                    allowOutsideClick: false, // Để cho click ra bên ngoài cũng ko thể tắt thông báo cuộc gọi
+                    confirmButtonColor: "#2ECC71",
+                    confirmButtonText: "Xác nhận",
+                });
+            });
+          }, function(err) {
+            if (err.toString() === "NotAllowedError: Permission denied") {
+                alertify.notify("Xin lỗi, bạn đã tắt quyền truy cập vào thiết bị nghe gọi trên trình duyệt, vui lòng mở lại trong phần cài đặt của trình duyệt.", "error", 7);
+            }
+            if (err.toString() === "NotFoundError: Requested device not found") {
+                alertify.notify("Xin lỗi, hệ thống không thể tìm thấy thiết bị nghe gọi trên thiết bị của bạn.", "error", 7);
+            }
+          });
+    });
+
+    // Step 14 của người nghe: server gửi thông báo cuộc gọi được chấp nhận về kết nối người nghe
+    socket.on("server-send-accept-call-to-listener", function(response) {
+        Swal.close();
+        clearInterval(timerInterval);
+
+        let getUserMedia = (navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia).bind(navigator);
+        peer.on("call", function(call) {
+            getUserMedia({video: false, audio: true}, function(stream) {
+                // Hiện modal gọi video call
+                $("#streamModal").modal("show");
+
+                // Play stream của listener tại local
+                playVideoStream("local-stream", stream);
+
+                call.answer(stream); // Answer the call with an A/V stream.
+                call.on("stream", function(remoteStream) {
+                    // Play stream của caller
+                    playVideoStream("remote-stream", remoteStream);
+                });
+                // Close modal: remove stream
+                $("#streamModal").on("hidden.bs.modal", function() {
+                    closeVideoStream(stream);
+                    Swal.fire({
+                        type:"info",
+                        title: `Đã kết thúc cuộc gọi với &nbsp; <span style="color: #2ECC71">${response.callerName}</span> &nbsp;`,
+                        backdrop: "rgba(85, 85, 85, 0.4)",
+                        width: "52rem",
+                        allowOutsideClick: false, // Để cho click ra bên ngoài cũng ko thể tắt thông báo cuộc gọi
+                        confirmButtonColor: "#2ECC71",
+                        confirmButtonText: "Xác nhận",
+                    });
+                });
+            }, function(err) {
+              if (err.toString() === "NotAllowedError: Permission denied") {
+                alertify.notify("Xin lỗi, bạn đã tắt quyền truy cập vào thiết bị nghe gọi trên trình duyệt, vui lòng mở lại trong phần cài đặt của trình duyệt.", "error", 7);
+              }
+              if (err.toString() === "NotFoundError: Requested device not found") {
+                alertify.notify("Xin lỗi, hệ thống không thể tìm thấy thiết bị nghe gọi trên thiết bị của bạn.", "error", 7);
+                }
+            });
+          });
+    });
 });
