@@ -273,7 +273,23 @@ ContactSchema.statics = {
     }, {
       "updatedAt": Date.now()
     }).exec();
-  }
+  },
+
+  /**
+   * Lấy ds bạn bè bằng user id
+   * @param {string} userId 
+   */
+  getFriends(userId) {
+    return this.find({
+      $and: [
+        {$or: [
+          {"userId": userId},
+          {"contactId": userId}
+        ]},
+        {"status": true}
+      ]
+    }).sort({"updatedAt": -1}).exec();//sort -1 là mới nhất
+  },
 };
 
 module.exports = mongoose.model("contact", ContactSchema);
