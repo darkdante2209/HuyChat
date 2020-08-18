@@ -4,6 +4,12 @@ import multer from "multer";
 import {app} from "./../config/app";
 import {transErrors, transSuccess} from "./../../lang/vi";
 import fsExtra from "fs-extra";
+import ejs from "ejs";
+import {lastItemOfArray, convertTimestampToHumanTime, bufferToBase64} from "./../helpers/clientHelper";
+import {promisify} from "util";
+
+// Xử lý ejs function renderFile có thể async await
+const renderFile = promisify(ejs.renderFile).bind(ejs);
 
 
 // Xử lý text và emoji chat
@@ -134,8 +140,41 @@ let addNewAttachment = (req, res) => {
     });
 };
 
+let readMoreAllChat = async (req, res) => {
+    try {
+        // Lấy số skip đã hiển thị từ query param để bỏ qua
+        let skipPersonal = +(req.query.skipPersonal);
+        let skipGroup = +(req.query.skipGroup);
+
+        // Lấy thêm item
+        let newAllConversations = await message.readMoreAllChat(req.user._id, skipPersonal, skipGroup);
+
+        let dataToRender = {
+            newAllConversations: newAllConversations,
+            lastItemOfArray: lastItemOfArray,
+            convertTimestampToHumanTime: convertTimestampToHumanTime,
+            bufferToBase64: bufferToBase64,
+            user: req.user
+        };
+        let leftSideData = await renderFile("src/views/main/readMoreConversations/_leftSide.ejs", dataToRender);
+        let rightSideData = await renderFile("src/views/main/readMoreConversations/_rightSide.ejs", dataToRender);
+        let imageModalData = await renderFile("src/views/main/readMoreConversations/_imageModal.ejs", dataToRender);
+        let attachmentModalData = await renderFile("src/views/main/readMoreConversations/_attachmentModal.ejs", dataToRender);
+
+        return res.status(200).send({
+            leftSideData: leftSideData,
+            rightSideData: rightSideData,
+            imageModalData: imageModalData,
+            attachmentModalData: attachmentModalData,
+        });
+      } catch (error) {
+          return res.status(500).send(error);
+    }
+};
+
 module.exports = {
     addNewTextEmoji: addNewTextEmoji,
     addNewImage: addNewImage,
-    addNewAttachment: addNewAttachment
+    addNewAttachment: addNewAttachment,
+    readMoreAllChat: readMoreAllChat
 };
