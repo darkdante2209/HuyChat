@@ -14,6 +14,7 @@ let chatTextEmoji = (io) => {
         socket.request.user.chatGroupIds.forEach(group => {
             clients = pushSocketIdToArray(clients, group._id, socket.id);
         });
+        // console.log(clients);
         socket.on("chat-text-emoji", (data) => {//Lắng nghe sự kiện mình tạo ra từ addContact.js
             if (data.groupId) {
                 let response = {

@@ -195,6 +195,14 @@ function changeScreenChat() {
 
     // Bật lắng nghe DOM cho việc chat tin nhắn tệp đính kèm
     attachmentChat(divId);
+
+    // Tắt video call bên chatgroup, nếu có vấn đề gì fix tại đây
+    $(`#video-chat-group-${divId}`).unbind("click").on("click", function() {
+      alertify.notify("Không khả dụng tính năng này với nhóm trò chuyện. Vui lòng thử lại với trò chuyện cá nhân", "error", 7);
+    });
+
+    // Bật lắng nghe DOM cho việc gọi video
+    videoChat(divId);
   });
 }
 
