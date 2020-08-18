@@ -28,7 +28,7 @@ function readMoreMessages() {
 
                 // Step 1.5: prevent scroll để khi cuộn lên thì màn hình vẫn giữ nguyến nếu load thêm tin nhắn chứ ko nhảy lên đầu
                 $(`.right .chat[data-chat=${targetId}]`).scrollTop(firstMessage.offset().top - currentOffset); 
-
+ 
                 // Step 02: converEmoji
                 convertEmoji();
 
