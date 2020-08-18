@@ -60,7 +60,38 @@ MessageSchema.statics = {
    */
   getMessagesInGroup(receiverId, limit) {
     return this.find({"receiverId": receiverId}).sort({"createdAt": -1}).limit(limit).exec();
-  }
+  },
+
+  /**
+   * Đọc thêm tin nhắn từ cá nhân
+   * @param {string} senderId currentUserId
+   * @param {string} receiverId id của liên hệ
+   * @param {number} limit 
+   */
+  readMoreMessagesInPersonal(senderId, receiverId, skip, limit) {
+    return this.find({
+      $or: [
+        {$and: [
+          {"senderId": senderId},
+          {"receiverId": receiverId}
+        ]},
+        {$and: [
+          {"receiverId": senderId},
+          {"senderId": receiverId}
+        ]}
+      ]
+    }).sort({"createdAt": -1}).skip(skip).limit(limit).exec();
+  },
+
+  /**
+   *  Lấy tin nhắn từ group chat
+   * @param {string} receiverId Id của một group chat 
+   * @param {number} limit 
+   */
+  readMoreMessagesInGroup(receiverId, skip, limit) {
+    return this.find({"receiverId": receiverId}).sort({"createdAt": -1}).skip(skip).limit(limit).exec();
+  },
+
 };
 
 const MESSAGE_CONVERSATION_TYPES = {

@@ -7,7 +7,7 @@ import {transErrors} from "./../../lang/vi";
 import {app} from "./../config/app";
 import fsExtra from "fs-extra";
 
-const LIMIT_CONVERSATIONS_TAKEN = 1;
+const LIMIT_CONVERSATIONS_TAKEN = 10;
 const LIMIT_MESSAGES_TAKEN = 30;
 
 
@@ -370,10 +370,37 @@ let readMoreAllChat = (currentUserId, skipPersonal, skipGroup) => {
     });
 };
 
+/**
+ * Đọc thêm tin nhắn
+ * @param {string} currentUserId 
+ * @param {number} skipMessage 
+ * @param {string} targetId 
+ * @param {boolean} chatInGroup 
+ */
+let readMore = (currentUserId, skipMessage, targetId, chatInGroup) => {
+    return new Promise(async (resolve, reject) => {
+        try {
+            // Tin nhắn trong group
+            if (chatInGroup) {
+                let getMessages = await MessageModel.model.readMoreMessagesInGroup(targetId, skipMessage, LIMIT_MESSAGES_TAKEN);
+                getMessages = _.reverse(getMessages);
+                return resolve(getMessages);
+            }
+            //Tin nhắn cá nhân
+            let getMessages = await MessageModel.model.readMoreMessagesInPersonal(currentUserId, targetId, skipMessage, LIMIT_MESSAGES_TAKEN);
+            getMessages = _.reverse(getMessages);
+            return resolve(getMessages);
+        } catch (error) {
+            reject(error);
+        }
+    });
+};
+
 module.exports = {
     getAllConversationItems: getAllConversationItems,
     addNewTextEmoji: addNewTextEmoji,
     addNewImage: addNewImage,
     addNewAttachment: addNewAttachment,
-    readMoreAllChat: readMoreAllChat
+    readMoreAllChat: readMoreAllChat,
+    readMore: readMore
 };

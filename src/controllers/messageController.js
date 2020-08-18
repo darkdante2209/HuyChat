@@ -147,7 +147,7 @@ let readMoreAllChat = async (req, res) => {
         let skipGroup = +(req.query.skipGroup);
 
         // Lấy thêm item
-        let newAllConversations = await message.readMoreAllChat(req.user._id, skipPersonal, skipGroup);
+        let newMessages = await message.readMoreAllChat(req.user._id, skipPersonal, skipGroup);
 
         let dataToRender = {
             newAllConversations: newAllConversations,
@@ -172,9 +172,42 @@ let readMoreAllChat = async (req, res) => {
     }
 };
 
+let readMore = async (req, res) => {
+    try {
+        // Lấy số skip đã hiển thị từ query param để bỏ qua
+        let skipMessage = +(req.query.skipMessage);
+        let targetId = req.query.targetId;
+        let chatInGroup = (req.query.chatInGroup === "true");
+
+        
+
+
+        // Lấy thêm item
+        let newMessages = await message.readMore(req.user._id, skipMessage, targetId, chatInGroup);
+
+        let dataToRender = {
+            newMessages: newMessages,
+            bufferToBase64: bufferToBase64,
+            user: req.user
+        };
+        let rightSideData = await renderFile("src/views/main/readMoreMessages/_rightSide.ejs", dataToRender);
+        let imageModalData = await renderFile("src/views/main/readMoreMessages/_imageModal.ejs", dataToRender);
+        let attachmentModalData = await renderFile("src/views/main/readMoreMessages/_attachmentModal.ejs", dataToRender);
+
+        return res.status(200).send({
+            rightSideData: rightSideData,
+            imageModalData: imageModalData,
+            attachmentModalData: attachmentModalData,
+        });
+      } catch (error) {
+          return res.status(500).send(error);
+    }
+};
+
 module.exports = {
     addNewTextEmoji: addNewTextEmoji,
     addNewImage: addNewImage,
     addNewAttachment: addNewAttachment,
-    readMoreAllChat: readMoreAllChat
+    readMoreAllChat: readMoreAllChat,
+    readMore: readMore
 };
